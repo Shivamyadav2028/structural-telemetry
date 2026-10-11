@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { Upload, FileSpreadsheet, ShieldCheck, Lock } from "lucide-react";
 import * as XLSX from "@e965/xlsx";
-import { DataGrid, type DataRow } from "./components/DataGrid";
+import { DataGrid, type DataRow } from "./DataGrid";
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
