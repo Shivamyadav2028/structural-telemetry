@@ -118,7 +118,7 @@ export default function App() {
               <p className="text-[11px] text-zinc-500">Uncapped file uploads and deep mathematical RMS processing profiles.</p>
             </div>
             <div className="space-y-2">
-              <p className="text-xl font-mono font-bold text-zinc-100">\$29<span className="text-xs text-zinc-500 font-normal"> / month</span></p>
+              <p className="text-xl font-mono font-bold text-zinc-100">$29<span className="text-xs text-zinc-500 font-normal"> / month</span></p>
               <button className="w-full rounded-md bg-zinc-100 hover:bg-zinc-200 py-2 text-xs font-semibold text-zinc-950 transition-all">Access Professional Hub</button>
             </div>
           </div>
@@ -128,7 +128,7 @@ export default function App() {
               <p className="text-[11px] text-zinc-500">Shared institutional licensing pipelines for complete university departments.</p>
             </div>
             <div className="space-y-2">
-              <p className="text-xl font-mono font-bold text-zinc-100 text-orange-500">\$149<span className="text-xs text-zinc-500 font-normal"> / month</span></p>
+              <p className="text-xl font-mono font-bold text-zinc-100 text-orange-500">$149<span className="text-xs text-zinc-500 font-normal"> / month</span></p>
               <button className="w-full rounded-md bg-orange-500 hover:bg-orange-400 py-2 text-xs font-semibold text-zinc-100 transition-all shadow-lg shadow-orange-500/10">Deploy Laboratory Space</button>
             </div>
           </div>
