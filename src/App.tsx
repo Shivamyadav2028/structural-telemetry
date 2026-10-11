@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from "react";
+mport { useState, useCallback, useEffect, useRef } from "react";
 import { useDropzone } from "react-dropzone";
 import { Upload, FileSpreadsheet, ShieldCheck, Database, BarChart3, Binary, Waves, Layers, Cpu, GraduationCap, Printer } from "lucide-react";
 import * as XLSX from "@e965/xlsx";
@@ -9,7 +9,7 @@ type AcademicTier = "undergrad" | "masters" | "phd";
 interface ComputationSuite {
   computedStiffnessK: number;
   dampingCoefficientC: number;
-NaturalFrequency: number;
+  naturalFrequency: number;
   logDecrement: number;
   dampingRatioZeta: number;
   dampedFrequency: number;
@@ -24,12 +24,12 @@ export default function App() {
   const [uploadStatus, setUploadStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [rows, setRows] = useState<DataRow[]>([]);
   const [activeTier, setActiveTier] = useState<AcademicTier>("undergrad");
-  
+ 
   // University Header Metadata States
   const [universityName, setUniversityName] = useState<string>("State Research University");
   const [departmentName, setDepartmentName] = useState<string>("Department of Mechanical & Structural Engineering");
   const [labAddress, setLabAddress] = useState<string>("Laboratory Block E, Room 402");
-  const [investigatorName, setInvestigatorName] = useState<string>("");
+  const [investigatorName, setInvestigatorName] = useState<string>("Dr. Shivam Yadav");
 
   const [metrics, setMetrics] = useState<ComputationSuite>({
     computedStiffnessK: 0, dampingCoefficientC: 0, naturalFrequency: 0,
@@ -43,16 +43,16 @@ export default function App() {
     const N = dataRows.length;
 
     // --- 1. UNDERGRADUATE TRACKING METRICS ---
-    const nominalMassM = 0.75; 
+    const nominalMassM = 0.75;
     const meanDisplacement = dataRows.reduce((acc, r) => acc + Math.abs(r.displacement), 0) / N || 0.001;
     const kCalc = (nominalMassM * 9.80665) / meanDisplacement;
     const wn = Math.sqrt(kCalc / nominalMassM);
     const criticalDamping = 2 * nominalMassM * wn;
-    const cCalc = criticalDamping * 0.15; 
+    const cCalc = criticalDamping * 0.15;
 
     // --- 2. MASTERS DAMPED SIGNAL METRICS ---
     const peakAmplitudes = dataRows.map(r => Math.abs(r.displacement)).sort((a, b) => b - a);
-    const x1 = peakAmplitudes || 0.015;
+    const x1 = peakAmplitudes[0] || 0.015;
     const x2 = peakAmplitudes[Math.min(3, peakAmplitudes.length - 1)] || 0.005;
     const logDec = Math.log(x1 / x2) / 3;
     const zeta = logDec / Math.sqrt(4 * Math.pow(Math.PI, 2) + Math.pow(logDec, 2));
@@ -102,7 +102,7 @@ export default function App() {
     const minPos = Math.min(...rows.map(r => r.position)) || 0;
     const maxDisp = Math.max(...rows.map(r => r.displacement)) || 1;
     const minDisp = Math.min(...rows.map(r => r.displacement)) || -1;
-    
+   
     const posRange = maxPos - minPos || 1;
     const dispRange = maxDisp - minDisp || 1;
 
@@ -173,18 +173,18 @@ export default function App() {
         const workbook = XLSX.read(payload, { type: "array" });
         const currentSheet = workbook.SheetNames;
         if (!currentSheet) throw new Error("Empty target layer");
-        
+       
         const worksheet = workbook.Sheets[currentSheet];
         const jsonRows = XLSX.utils.sheet_to_json<any>(worksheet);
         if (jsonRows.length === 0) throw new Error("Zero analytical rows caught");
 
         const items = jsonRows.map((row: any, i: number) => {
           const attributes = Object.keys(row);
-          const nodeKey = attributes.find(k => k.toLowerCase().includes("node") || k.toLowerCase().includes("id")) ?? attributes;
-          const posKey = attributes.find(k => k.toLowerCase().includes("position") || k.toLowerCase().includes("pos") || k.toLowerCase().includes("x")) ?? attributes;
-          const dispKey = attributes.find(k => k.toLowerCase().includes("displacement") || k.toLowerCase().includes("disp") || k.toLowerCase().includes("y")) ?? attributes;
-          const freqKey = attributes.find(k => k.toLowerCase().includes("frequency") || k.toLowerCase().includes("freq") || k.toLowerCase().includes("hz")) ?? attributes;
-          const paramKey = attributes.find(k => k.toLowerCase().includes("parameter") || k.toLowerCase().includes("param") || k.toLowerCase().includes("mat")) ?? attributes;
+          const nodeKey = attributes.find(k => k.toLowerCase().includes("node") || k.toLowerCase().includes("id")) ?? attributes[0];
+          const posKey = attributes.find(k => k.toLowerCase().includes("position") || k.toLowerCase().includes("pos") || k.toLowerCase().includes("x")) ?? attributes[1];
+          const dispKey = attributes.find(k => k.toLowerCase().includes("displacement") || k.toLowerCase().includes("disp") || k.toLowerCase().includes("y")) ?? attributes[2];
+          const freqKey = attributes.find(k => k.toLowerCase().includes("frequency") || k.toLowerCase().includes("freq") || k.toLowerCase().includes("hz")) ?? attributes[3];
+          const paramKey = attributes.find(k => k.toLowerCase().includes("parameter") || k.toLowerCase().includes("param") || k.toLowerCase().includes("mat")) ?? attributes[4];
 
           return {
             id: String(i + 1),
