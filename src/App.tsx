@@ -328,15 +328,57 @@ export default function App() {
                 </div>
               </div>
             )}
-
-            {activeTier === "phd" && (
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="p-4 rounded-lg bg-zinc-900/40 border border-zinc-800 font-mono space-y-1">
-                  <div className="flex items-center space-x-2 text-zinc-400"><Cpu className="h-3.5 w-3.5 text-purple-400" /><span className="text-[10px] uppercase">State Matrix Trace</span></div>
-                  <p className="text-lg font-bold text-zinc-100">{metrics.stateSpaceTrace.toFixed(4)}</p>
-                </div>
-                <div className="p-4 rounded-lg bg-zinc-900/40 border border-zinc-800 font-mono space-y-1">
+ <div className="p-4 rounded-lg bg-zinc-900/40 border border-zinc-800 font-mono space-y-1">
                   <div className="flex items-center space-x-2 text-purple-400"><Layers className="h-3.5 w-3.5 text-purple-400" /><span className="text-[10px] uppercase">Matrix Det |A|</span></div>
                   <p className="text-lg font-bold text-zinc-100">{metrics.matrixDeterminant.toExponential(3)}</p>
                 </div>
                 <div className="p-4 rounded-lg bg-zinc-900/40 border border-zinc-800 font-mono space-y-1">
+                  <div className="flex items-center space-x-2 text-purple-400"><Binary className="h-3.5 w-3.5 text-purple-400" /><span className="text-[10px] uppercase">System Eigenvalues</span></div>
+                  <p className="text-sm font-bold text-zinc-100">{metrics.eigenvalueReal.toFixed(2)} ± {metrics.eigenvalueImag.toFixed(2)}i</p>
+                </div>
+              </div>
+            )}
+
+            <div className="p-5 rounded-lg bg-zinc-900/20 border border-zinc-800 space-y-3">
+              <h3 className="text-xs font-mono font-bold tracking-tight text-zinc-400 uppercase flex items-center"><BarChart3 className="mr-2 h-4 w-4 text-[#00D2FF]" /> Live Telemetry Signal Waveform</h3>
+              <canvas ref={canvasRef} width={800} height={240} className="w-full h-60 bg-zinc-950 rounded border border-zinc-900" />
+            </div>
+
+            <div className="space-y-3">
+              <h3 className="text-xs font-mono font-bold tracking-tight text-zinc-400 uppercase">System Data Array Ledger</h3>
+              <DataGrid rows={rows} />
+            </div>
+          </div>
+        )}
+
+        <section className="pt-6 border-t border-zinc-900 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-6 flex flex-col justify-between space-y-4">
+            <div className="space-y-1">
+              <h3 className="text-sm font-bold text-zinc-200">Professional Researcher Plan</h3>
+              <p className="text-[11px] text-zinc-500">Uncapped file uploads and deep mathematical RMS processing profiles.</p>
+            </div>
+            <div className="space-y-2">
+              <p className="text-xl font-mono font-bold text-zinc-100">$29<span className="text-xs text-zinc-500 font-normal"> / month</span></p>
+              <button className="w-full rounded-md bg-zinc-100 hover:bg-zinc-200 py-2 text-xs font-semibold text-zinc-950 transition-all">Access Professional Hub</button>
+            </div>
+          </div>
+          <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-6 flex flex-col justify-between space-y-4">
+            <div className="space-y-1">
+              <h3 className="text-sm font-bold text-zinc-200">Enterprise Laboratory Plan</h3>
+              <p className="text-[11px] text-zinc-500">Shared institutional licensing pipelines for complete university departments.</p>
+            </div>
+            <div className="space-y-2">
+              <p className="text-xl font-mono font-bold text-orange-500">$149<span className="text-xs text-zinc-500 font-normal"> / month</span></p>
+              <button className="w-full rounded-md bg-orange-500 hover:bg-orange-400 py-2 text-xs font-semibold text-zinc-100 transition-all shadow-lg shadow-orange-500/10">Deploy Laboratory Space</button>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer className="print:hidden mt-auto border-t border-zinc-900 bg-zinc-950 px-6 py-4 flex items-center justify-between text-[10px] text-zinc-600 font-mono">
+        <p>&copy; 2026 Structural Telemetry Studio. All proprietary rights secured.</p>
+        <p>Ledger Loop Node Connected.</p>
+      </footer>
+    </div>
+  );
+  }
