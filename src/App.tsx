@@ -24,7 +24,7 @@ export default function App() {
   const [uploadStatus, setUploadStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [rows, setRows] = useState<DataRow[]>([]);
   const [activeTier, setActiveTier] = useState<AcademicTier>("undergrad");
- 
+  
   // University Header Metadata States
   const [universityName, setUniversityName] = useState<string>("State Research University");
   const [departmentName, setDepartmentName] = useState<string>("Department of Mechanical & Structural Engineering");
@@ -43,12 +43,12 @@ export default function App() {
     const N = dataRows.length;
 
     // --- 1. UNDERGRADUATE TRACKING METRICS ---
-    const nominalMassM = 0.75;
+    const nominalMassM = 0.75; 
     const meanDisplacement = dataRows.reduce((acc, r) => acc + Math.abs(r.displacement), 0) / N || 0.001;
     const kCalc = (nominalMassM * 9.80665) / meanDisplacement;
     const wn = Math.sqrt(kCalc / nominalMassM);
     const criticalDamping = 2 * nominalMassM * wn;
-    const cCalc = criticalDamping * 0.15;
+    const cCalc = criticalDamping * 0.15; 
 
     // --- 2. MASTERS DAMPED SIGNAL METRICS ---
     const peakAmplitudes = dataRows.map(r => Math.abs(r.displacement)).sort((a, b) => b - a);
@@ -102,7 +102,7 @@ export default function App() {
     const minPos = Math.min(...rows.map(r => r.position)) || 0;
     const maxDisp = Math.max(...rows.map(r => r.displacement)) || 1;
     const minDisp = Math.min(...rows.map(r => r.displacement)) || -1;
-   
+    
     const posRange = maxPos - minPos || 1;
     const dispRange = maxDisp - minDisp || 1;
 
@@ -173,18 +173,18 @@ export default function App() {
         const workbook = XLSX.read(payload, { type: "array" });
         const currentSheet = workbook.SheetNames;
         if (!currentSheet) throw new Error("Empty target layer");
-       
+        
         const worksheet = workbook.Sheets[currentSheet];
         const jsonRows = XLSX.utils.sheet_to_json<any>(worksheet);
         if (jsonRows.length === 0) throw new Error("Zero analytical rows caught");
 
         const items = jsonRows.map((row: any, i: number) => {
           const attributes = Object.keys(row);
-          const nodeKey = attributes.find(k => k.toLowerCase().includes("node") || k.toLowerCase().includes("id")) ?? attributes[0];
-          const posKey = attributes.find(k => k.toLowerCase().includes("position") || k.toLowerCase().includes("pos") || k.toLowerCase().includes("x")) ?? attributes[1];
-          const dispKey = attributes.find(k => k.toLowerCase().includes("displacement") || k.toLowerCase().includes("disp") || k.toLowerCase().includes("y")) ?? attributes[2];
-          const freqKey = attributes.find(k => k.toLowerCase().includes("frequency") || k.toLowerCase().includes("freq") || k.toLowerCase().includes("hz")) ?? attributes[3];
-          const paramKey = attributes.find(k => k.toLowerCase().includes("parameter") || k.toLowerCase().includes("param") || k.toLowerCase().includes("mat")) ?? attributes[4];
+          const nodeKey = attributes.find(k => k.toLowerCase().includes("node") || k.toLowerCase().includes("id")) ?? attributes;
+          const posKey = attributes.find(k => k.toLowerCase().includes("position") || k.toLowerCase().includes("pos") || k.toLowerCase().includes("x")) ?? attributes;
+          const dispKey = attributes.find(k => k.toLowerCase().includes("displacement") || k.toLowerCase().includes("disp") || k.toLowerCase().includes("y")) ?? attributes;
+          const freqKey = attributes.find(k => k.toLowerCase().includes("frequency") || k.toLowerCase().includes("freq") || k.toLowerCase().includes("hz")) ?? attributes;
+          const paramKey = attributes.find(k => k.toLowerCase().includes("parameter") || k.toLowerCase().includes("param") || k.toLowerCase().includes("mat")) ?? attributes;
 
           return {
             id: String(i + 1),
@@ -226,159 +226,3 @@ export default function App() {
           <FileSpreadsheet className="h-5 w-5 text-[#00D2FF]" />
           <span className="text-sm font-bold font-mono tracking-tight text-zinc-100">Structural Telemetry Studio</span>
         </div>
-        {/* Web Interactive Layout Viewport: Hidden on Print */}
-      <main className="print:hidden flex-1 max-w-7xl w-full mx-auto p-6 space-y-8">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="space-y-1">
-            <h1 className="text-2xl font-bold tracking-tight text-zinc-100 sm:text-3xl">Structural Telemetry Processor</h1>
-            <p className="text-xs text-zinc-400 max-w-2xl">
-              Multi-disciplinary parser executing structural tracking, signal decrements, and phase state-space transitions. Configure institutional header configurations below to print verified reports.
-            </p>
-          </div>
-          <button 
-            onClick={loadHighDemandDataset}
-            className="inline-flex items-center self-start justify-center space-x-2 rounded-md bg-zinc-900 hover:bg-zinc-800 text-xs font-semibold px-4 py-2.5 text-[#00D2FF] border border-zinc-800 transition-all font-mono"
-          >
-            <Database className="h-4 w-4" />
-            <span>Load Reference Research Node Matrix</span>
-          </button>
-        </div>
-
-        {/* Institutional Template Customization Inputs Card */}
-        <section className="p-5 rounded-lg border border-zinc-900 bg-zinc-900/10 grid grid-cols-1 md:grid-cols-4 gap-4 text-xs font-mono">
-          <div className="space-y-1">
-            <label className="text-zinc-400 text-[10px] uppercase font-bold">University / Institute Name</label>
-            <input type="text" value={universityName} onChange={(e) => setUniversityName(e.target.value)} className="w-full bg-zinc-950 border border-zinc-800 rounded p-2 text-zinc-100 focus:outline-none focus:border-[#00D2FF]" />
-          </div>
-          <div className="space-y-1">
-            <label className="text-zinc-400 text-[10px] uppercase font-bold">Department / Division</label>
-            <input type="text" value={departmentName} onChange={(e) => setDepartmentName(e.target.value)} className="w-full bg-zinc-950 border border-zinc-800 rounded p-2 text-zinc-100 focus:outline-none focus:border-[#00D2FF]" />
-          </div>
-          <div className="space-y-1">
-            <label className="text-zinc-400 text-[10px] uppercase font-bold">Laboratory Branch Address</label>
-            <input type="text" value={labAddress} onChange={(e) => setLabAddress(e.target.value)} className="w-full bg-zinc-950 border border-zinc-800 rounded p-2 text-zinc-100 focus:outline-none focus:border-[#00D2FF]" />
-          </div>
-          <div className="space-y-1">
-            <label className="text-zinc-400 text-[10px] uppercase font-bold">Investigator Name / Student ID</label>
-            <input type="text" value={investigatorName} placeholder="e.g. Dr. Shivam Yadav" onChange={(e) => setInvestigatorName(e.target.value)} className="w-full bg-zinc-950 border border-zinc-800 rounded p-2 text-zinc-100 placeholder:text-zinc-700 focus:outline-none focus:border-[#00D2FF]" />
-          </div>
-        </section>
-
-        {/* Level Navigation Selector Toggles */}
-        <div className="grid grid-cols-3 gap-2 bg-zinc-900/40 p-1.5 rounded-lg border border-zinc-900 max-w-xl font-mono text-[11px]">
-          <button onClick={() => setActiveTier("undergrad")} className={`flex items-center justify-center space-x-2 py-2 rounded-md transition-all font-bold ${activeTier === "undergrad" ? "bg-zinc-800 text-[#00D2FF] border border-zinc-700/50" : "text-zinc-400 hover:text-zinc-200"}`}><GraduationCap className="h-3.5 w-3.5" /><span>Undergrad Lab</span></button>
-          <button onClick={() => setActiveTier("masters")} className={`flex items-center justify-center space-x-2 py-2 rounded-md transition-all font-bold ${activeTier === "masters" ? "bg-zinc-800 text-orange-400 border border-zinc-700/50" : "text-zinc-400 hover:text-zinc-200"}`}><Layers className="h-3.5 w-3.5" /><span>Master's Core</span></button>
-          <button onClick={() => setActiveTier("phd")} className={`flex items-center justify-center space-x-2 py-2 rounded-md transition-all font-bold ${activeTier === "phd" ? "bg-zinc-800 text-purple-400 border border-zinc-700/50" : "text-zinc-400 hover:text-zinc-200"}`}><Cpu className="h-3.5 w-3.5" /><span>PhD Research</span></button>
-        </div>
-
-        <div {...getRootProps()} className={`cursor-pointer rounded-lg border-2 border-dashed p-12 text-center transition-all ${isDragActive ? "border-[#00D2FF] bg-[#00D2FF]/5" : "border-zinc-800 hover:border-zinc-700 bg-zinc-950"}`}>
-          <input {...getInputProps()} />
-          <div className="flex flex-col items-center justify-center space-y-3">
-            <Upload className="h-5 w-5 text-zinc-500" />
-            <p className="text-xs font-medium text-zinc-300">{isDragActive ? "Release to process matrix" : "Drag & drop your research Excel (.xlsx) or CSV worksheet here"}</p>
-          </div>
-        </div>
-
-        {uploadStatus === "loading" && <p className="text-xs font-mono text-zinc-500 animate-pulse">Compiling analytical metrics...</p>}
-        {uploadStatus === "error" && <p className="text-xs font-mono text-red-400 font-semibold">Schema validation error: Check parameter constraints.</p>}
-
-        {uploadStatus === "success" && rows.length > 0 && (
-          <div className="space-y-6 animate-in fade-in duration-200">
-            <div className="flex items-center justify-between border-b border-zinc-900 pb-2">
-              <p className="text-xs font-mono text-zinc-400">Active File Node: <span className="text-[#00D2FF]">{fileName}</span></p>
-              <button 
-                onClick={executeSystemPrint}
-                className="inline-flex items-center space-x-2 rounded bg-zinc-100 hover:bg-zinc-200 text-zinc-950 font-semibold px-3 py-1.5 text-xs font-mono transition-all shadow"
-              >
-                <Printer className="h-3.5 w-3.5" />
-                <span>Export Report Document</span>
-              </button>
-            </div>
-
-            {activeTier === "undergrad" && (
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="p-4 rounded-lg bg-zinc-900/40 border border-zinc-800 font-mono space-y-1">
-                  <div className="flex items-center space-x-2 text-zinc-400"><Binary className="h-3.5 w-3.5 text-[#00D2FF]" /><span className="text-[10px] uppercase">Stiffness Constant (k)</span></div>
-                  <p className="text-lg font-bold text-zinc-100">{metrics.computedStiffnessK.toFixed(2)} N/m</p>
-                </div>
-                <div className="p-4 rounded-lg bg-zinc-900/40 border border-zinc-800 font-mono space-y-1">
-                  <div className="flex items-center space-x-2 text-zinc-400"><Waves className="h-3.5 w-3.5 text-zinc-400" /><span className="text-[10px] uppercase">Damping Coeff (c)</span></div>
-                  <p className="text-lg font-bold text-zinc-100">{metrics.dampingCoefficientC.toFixed(4)} N·s/m</p>
-                </div>
-                <div className="p-4 rounded-lg bg-zinc-900/40 border border-zinc-800 font-mono space-y-1">
-                  <div className="flex items-center space-x-2 text-zinc-400"><BarChart3 className="h-3.5 w-3.5 text-zinc-400" /><span className="text-[10px] uppercase">Natural Freq (f_n)</span></div>
-                  <p className="text-lg font-bold text-zinc-100">{metrics.naturalFrequency.toFixed(3)} Hz</p>
-                </div>
-              </div>
-            )}
-
-            {activeTier === "masters" && (
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="p-4 rounded-lg bg-zinc-900/40 border border-zinc-800 font-mono space-y-1">
-                  <div className="flex items-center space-x-2 text-zinc-400"><Layers className="h-3.5 w-3.5 text-orange-400" /><span className="text-[10px] uppercase">Log Decrement (δ)</span></div>
-                  <p className="text-lg font-bold text-zinc-100">{metrics.logDecrement.toFixed(5)}</p>
-                </div>
-                <div className="p-4 rounded-lg bg-zinc-900/40 border border-zinc-800 font-mono space-y-1">
-                  <div className="flex items-center space-x-2 text-zinc-400"><Waves className="h-3.5 w-3.5 text-orange-400" /><span className="text-[10px] uppercase">Damping Ratio (ζ)</span></div>
-                  <p className="text-lg font-bold text-zinc-100">{metrics.dampingRatioZeta.toExponential(4)}</p>
-                </div>
-                <div className="p-4 rounded-lg bg-zinc-900/40 border border-zinc-800 font-mono space-y-1">
-                  <div className="flex items-center space-x-2 text-orange-400"><BarChart3 className="h-3.5 w-3.5 text-orange-400" /><span className="text-[10px] uppercase">Damped Freq (f_d)</span></div>
-                  <p className="text-lg font-bold text-zinc-100">{metrics.dampedFrequency.toFixed(3)} Hz</p>
-                </div>
-              </div>
-            )}
- <div className="p-4 rounded-lg bg-zinc-900/40 border border-zinc-800 font-mono space-y-1">
-                  <div className="flex items-center space-x-2 text-purple-400"><Layers className="h-3.5 w-3.5 text-purple-400" /><span className="text-[10px] uppercase">Matrix Det |A|</span></div>
-                  <p className="text-lg font-bold text-zinc-100">{metrics.matrixDeterminant.toExponential(3)}</p>
-                </div>
-                <div className="p-4 rounded-lg bg-zinc-900/40 border border-zinc-800 font-mono space-y-1">
-                  <div className="flex items-center space-x-2 text-purple-400"><Binary className="h-3.5 w-3.5 text-purple-400" /><span className="text-[10px] uppercase">System Eigenvalues</span></div>
-                  <p className="text-sm font-bold text-zinc-100">{metrics.eigenvalueReal.toFixed(2)} ± {metrics.eigenvalueImag.toFixed(2)}i</p>
-                </div>
-              </div>
-            )}
-
-            <div className="p-5 rounded-lg bg-zinc-900/20 border border-zinc-800 space-y-3">
-              <h3 className="text-xs font-mono font-bold tracking-tight text-zinc-400 uppercase flex items-center"><BarChart3 className="mr-2 h-4 w-4 text-[#00D2FF]" /> Live Telemetry Signal Waveform</h3>
-              <canvas ref={canvasRef} width={800} height={240} className="w-full h-60 bg-zinc-950 rounded border border-zinc-900" />
-            </div>
-
-            <div className="space-y-3">
-              <h3 className="text-xs font-mono font-bold tracking-tight text-zinc-400 uppercase">System Data Array Ledger</h3>
-              <DataGrid rows={rows} />
-            </div>
-          </div>
-        )}
-
-        <section className="pt-6 border-t border-zinc-900 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-6 flex flex-col justify-between space-y-4">
-            <div className="space-y-1">
-              <h3 className="text-sm font-bold text-zinc-200">Professional Researcher Plan</h3>
-              <p className="text-[11px] text-zinc-500">Uncapped file uploads and deep mathematical RMS processing profiles.</p>
-            </div>
-            <div className="space-y-2">
-              <p className="text-xl font-mono font-bold text-zinc-100">$29<span className="text-xs text-zinc-500 font-normal"> / month</span></p>
-              <button className="w-full rounded-md bg-zinc-100 hover:bg-zinc-200 py-2 text-xs font-semibold text-zinc-950 transition-all">Access Professional Hub</button>
-            </div>
-          </div>
-          <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-6 flex flex-col justify-between space-y-4">
-            <div className="space-y-1">
-              <h3 className="text-sm font-bold text-zinc-200">Enterprise Laboratory Plan</h3>
-              <p className="text-[11px] text-zinc-500">Shared institutional licensing pipelines for complete university departments.</p>
-            </div>
-            <div className="space-y-2">
-              <p className="text-xl font-mono font-bold text-orange-500">$149<span className="text-xs text-zinc-500 font-normal"> / month</span></p>
-              <button className="w-full rounded-md bg-orange-500 hover:bg-orange-400 py-2 text-xs font-semibold text-zinc-100 transition-all shadow-lg shadow-orange-500/10">Deploy Laboratory Space</button>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <footer className="print:hidden mt-auto border-t border-zinc-900 bg-zinc-950 px-6 py-4 flex items-center justify-between text-[10px] text-zinc-600 font-mono">
-        <p>&copy; 2026 Structural Telemetry Studio. All proprietary rights secured.</p>
-        <p>Ledger Loop Node Connected.</p>
-      </footer>
-    </div>
-  );
-  }
