@@ -1,4 +1,4 @@
-mport { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useDropzone } from "react-dropzone";
 import { Upload, FileSpreadsheet, ShieldCheck, Database, BarChart3, Binary, Waves, Layers, Cpu, GraduationCap, Printer } from "lucide-react";
 import * as XLSX from "@e965/xlsx";
