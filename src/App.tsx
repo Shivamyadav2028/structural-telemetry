@@ -98,7 +98,7 @@ const rundynamicCalculations = (dataRows: DataRow[]) => {
     const eigReal = trace / 2;
     const eigImag = discriminant >= 0 ? 0 : Math.sqrt(Math.abs(discriminant)) / 2;
 
-    setMetrics({
+ setMetrics({
       computedStiffness: kCalc,
       dampingCoefficientC: cc,
       naturalFrequency: wn,
@@ -106,30 +106,30 @@ const rundynamicCalculations = (dataRows: DataRow[]) => {
       nominalMassM: mass,
       staticDeflection: meanDisp,
       potentialEnergy: 0.5 * kCalc * meanDisp * meanDisp,
-      kineticEnergy: 0.5 * mass * 0.0145,
-      totalMechanicalEnergy: (0.5 * kCalc * meanDisp * meanDisp) + 0.0054,
-      springForceMax: kCalc * meanDisp * 2,
+      kineticEnergy: 0.5 * mass * (dispVals.length > 1 ? Math.pow((dispVals[1] - dispVals[0]) / 0.01, 2) : 0),
+      totalMechanicalEnergy: (0.5 * kCalc * meanDisp * meanDisp) + (0.5 * mass * (dispVals.length > 1 ? Math.pow((dispVals[1] - dispVals[0]) / 0.01, 2) : 0)),
+      springForceMax: kCalc * meanDisp * 1.5,
       logDecrement: logDec,
       dampingRatioZeta: zeta,
       dampedFrequency: wd,
-      phaseShiftPhi: zeta * 2,
-      rmsEnergyDissipation: 0.0142 * (meanForce > 0 ? meanForce : 1),
+      phaseShiftPhi: Math.atan2(2 * zeta * (wn > 0 ? 1 : 0), 1 - Math.pow(wn > 0 ? 1 : 0, 2)),
+      rmsEnergyDissipation: Math.PI * cc * wn * meanDisp * meanDisp,
       qualityFactorQ: zeta > 0 ? 1 / (2 * zeta) : 0,
-      transmissibilityRatio: 1.0032,
-      excitationFrequency: 12.5,
+      transmissibilityRatio: Math.sqrt((1 + Math.pow(2 * zeta, 2)) / (Math.pow(1, 2) + Math.pow(2 * zeta, 2))),
+      excitationFrequency: wn > 0 ? (wn / (2 * Math.PI)) * 0.95 : 0,
       steadyStateAmplitude: meanDisp,
-      dynamicAmplificationFactor: 1.042,
+      dynamicAmplificationFactor: zeta > 0 ? 1 / (2 * zeta) : 1,
       stateSpaceTrace: trace,
       matrixDeterminant: det,
       eigenvalueReal: eigReal,
       eigenvalueImag: eigImag,
       lyapunovVExponent: eigReal * 2,
-      kalmanObserverGainL1: Math.abs(trace) * 1.5,
-      kalmanObserverGainL2: det * 0.013,
-      controllabilityGramianDet: 1.4502e-4,
-      observabilityGramianDet: 8.9210e-3,
+      kalmanObserverGainL1: Math.abs(trace) * 1.25,
+      kalmanObserverGainL2: det * 0.05,
+      controllabilityGramianDet: mass > 0 ? 1.0 / (mass * mass * Math.abs(trace || 1)) : 0,
+      observabilityGramianDet: kCalc > 0 ? 1.0 / (kCalc * Math.abs(trace || 1)) : 0,
       bodePhaseMarginDeg: 90 - (zeta * 180 / Math.PI)
-    });
+    });     
   };
   const renderVisualTelemetryWave = useCallback(() => {
     const canvas = canvasRef.current;
