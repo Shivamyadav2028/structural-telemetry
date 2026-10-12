@@ -297,6 +297,51 @@ const handlePrintReport = () => {
               <FileSpreadsheet className="h-8 w-8 mx-auto mb-3 text-zinc-500" />
               <p className="text-xs text-zinc-400">Drag spreadsheet here, or click to choose file</p>
             </div>
+            {/* DYNAMIC CHART AXIS SELECTOR PANEL */}
+          <div className="bg-zinc-900/20 border border-zinc-900 rounded-xl p-5 space-y-4 backdrop-blur-sm mt-4 font-mono">
+            <h2 className="text-xs font-bold tracking-widest text-zinc-400 uppercase flex items-center gap-2 border-b border-zinc-800/60 pb-2">
+              <LineChart className="h-4 w-4 text-[#00D2FF]" /> Chart Waveform Canvas Axis Selector
+            </h2>
+            <p className="text-[10px] text-zinc-500 leading-relaxed">Choose exactly which spreadsheet columns plot live on the coordinate waveform canvas below.</p>
+            <div className="grid grid-cols-2 gap-3 text-xs">
+              <div className="flex flex-col gap-1">
+                <span className="text-zinc-500 font-bold text-[9px] uppercase">X-Axis Coordinate:</span>
+                <select value={selectedXAxis} onChange={(e) => setSelectedXAxis(e.target.value)} className="bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-zinc-200 focus:outline-none focus:border-[#00D2FF] truncate">
+                  <option value="">-- Select Column --</option>
+                  {availableHeaders.map(h => <option key={h} value={h}>{h}</option>)}
+                </select>
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-zinc-500 font-bold text-[9px] uppercase">Y-Axis Coordinate:</span>
+                <select value={selectedYAxis} onChange={(e) => setSelectedYAxis(e.target.value)} className="bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-zinc-200 focus:outline-none focus:border-[#00D2FF] truncate">
+                  <option value="">-- Select Column --</option>
+                  {availableHeaders.map(h => <option key={h} value={h}>{h}</option>)}
+                </select>
+              </div>
+            </div>
+          </div>
+            {/* AUTONOMOUS MATRIX VARIABLE COLUMN MAPPER */}
+          <div className="bg-zinc-900/20 border border-zinc-900 rounded-xl p-5 space-y-4 backdrop-blur-sm mt-4 font-mono">
+            <h2 className="text-xs font-bold tracking-widest text-zinc-400 uppercase flex items-center gap-2 border-b border-zinc-800/60 pb-2">
+              <Sliders className="h-4 w-4 text-[#00D2FF]" /> Custom Matrix Mapping Panel
+            </h2>
+            <p className="text-[10px] text-zinc-500 leading-relaxed">Map custom variables to feed the research assessment calculations live upon dropdown modification.</p>
+            <div className="space-y-2 text-xs">
+              {Object.keys(mappings).map((key) => (
+                <div key={key} className="flex items-center justify-between bg-zinc-950/60 border border-zinc-900 p-2 rounded-lg gap-2">
+                  <span className="capitalize text-zinc-400 font-bold text-[11px]">{key}:</span>
+                  <select
+                    value={mappings[key as keyof typeof mappings]}
+                    onChange={(e) => setMappings(prev => ({ ...prev, [key]: e.target.value }))}
+                    className="bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-zinc-200 focus:outline-none focus:border-[#00D2FF] max-w-[150px] truncate"
+                  >
+                    <option value="">-- Leave Unmapped --</option>
+                    {availableHeaders.map(h => <option key={h} value={h}>{h}</option>)}
+                  </select>
+                </div>
+              ))}
+            </div>
+          </div>
             {filename && (
               <div className="bg-zinc-950 border border-zinc-900 rounded-lg p-3 flex items-center justify-between">
                 <p className="text-xs font-medium truncate text-zinc-300">{filename}</p>
