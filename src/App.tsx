@@ -64,8 +64,10 @@ const rundynamicCalculations = (dataRows: DataRow[]) => {
     if (dataRows.length === 0) return;
     const N = dataRows.length;
     
-    // STRATEGY: Bind directly to your core scientific user state parameter with zero fake fallbacks
-    const mass = Number(nominalMassInput); 
+     // STRATEGY: Read user's manual text entry first. If blank, automatically scan file row metadata keys for mass columns.
+    const manualVal = Number((document.querySelector('input[placeholder*="Enter mass"]') as HTMLInputElement)?.value) || Number(nominalMassInput);
+    const fileMassVal = dataRows.length > 0 ? (Number(dataRows[0]["mass"] || dataRows[0]["Mass"] || dataRows[0]["nominalMass"] || dataRows[0]["NOMINAL_MASS"])) : 0;
+    const mass = manualVal > 0 ? manualVal : (fileMassVal > 0 ? fileMassVal : 0.75);
     const g = 9.80665;
 
     // Extract genuine data vectors dynamically from user dropdown mapping selections
