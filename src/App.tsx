@@ -190,16 +190,22 @@ const handlePrintReport = () => {
               <tr><th>Vibration Assessment Channel</th><th>Calculated Scalar Matrix Elements</th></tr>
             </thead>
             <tbody>
-              <tr><td>Computed Equivalent Stiffness (k)</td><td>${metrics.computedStiffness.toFixed(4)} N/m</td></tr>
-              <tr><td>Viscous Damping Coefficient (c)</td><td>${metrics.dampingCoefficientC.toFixed(4)} N-s/m</td></tr>
-              <tr><td>System Natural Frequency (ωn)</td><td>${metrics.naturalFrequency.toFixed(4)} rad/s</td></tr>
-              <tr><td>Logarithmic Decrement (δ)</td><td>${metrics.logDecrement.toFixed(4)}</td></tr>
-              <tr><td>Damping Ratio (ζ)</td><td>${metrics.dampingRatioZeta.toFixed(5)}</td></tr>
-              <tr><td>Damped Natural Frequency (ωd)</td><td>${metrics.dampedFrequency.toFixed(4)} rad/s</td></tr>
-              <tr><td>State-Space Trace Matrix Element</td><td>${metrics.stateSpaceTrace.toFixed(4)}</td></tr>
-              <tr><td>Matrix Determinant Outline (Δ)</td><td>${metrics.matrixDeterminant.toFixed(4)}</td></tr>
-              <tr><td>Eigenvalue Characteristic (Real Line)</td><td>${metrics.eigenvalueReal.toFixed(4)}</td></tr>
-              <tr><td>Eigenvalue Characteristic (Imaginary J-Axis)</td><td>${metrics.eigenvalueImag.toFixed(4)} i</td></tr>
+              \${activeTier === "undergrad" ? `
+  <tr><th colSpan="2" style="background: #f8fafc; color: #0088cc; font-size: 11px; font-family: monospace; padding: 8px;">TRACK 1: UNDERGRADUATE LAB CORE CONSTANTS</th></tr>
+  <tr><td style="padding: 8px;">Computed Structural Stiffness (k)</td><td style="padding: 8px; font-weight: bold;">${metrics.computedStiffness.toFixed(4)} N/m</td></tr>
+  <tr><td style="padding: 8px;">Viscous Damping Coefficient (c)</td><td style="padding: 8px;">${metrics.dampingCoefficientC.toFixed(4)} N-s/m</td></tr>
+  <tr><td style="padding: 8px;">System Natural Frequency (ωn)</td><td style="padding: 8px;">${metrics.naturalFrequency.toFixed(4)} rad/s</td></tr>
+` : activeTier === "masters" ? `
+  <tr><th colSpan="2" style="background: #fef08a; color: #854d0e; font-size: 11px; font-family: monospace; padding: 8px;">TRACK 2: MASTER'S TRANSIENT SIGNAL ANALYSIS</th></tr>
+  <tr><td style="padding: 8px;">Logarithmic Decrement (δ)</td><td style="padding: 8px; font-weight: bold;">${metrics.logDecrement.toFixed(4)}</td></tr>
+  <tr><td style="padding: 8px;">Viscous Damping Ratio (ζ)</td><td style="padding: 8px;">${metrics.dampingRatioZeta.toFixed(5)}</td></tr>
+  <tr><td style="padding: 8px;">Damped Natural Frequency (ωd)</td><td style="padding: 8px;">${metrics.dampedFrequency.toFixed(4)} rad/s</td></tr>
+` : `
+  <tr><th colSpan="2" style="background: #f3e8ff; color: #6b21a8; font-size: 11px; font-family: monospace; padding: 8px;">TRACK 3: PhD SYSTEM STATE-SPACE STABILITY SUITE</th></tr>
+  <tr><td style="padding: 8px;">State-Space System Matrix Trace</td><td style="padding: 8px; font-weight: bold;">${metrics.stateSpaceTrace.toFixed(4)}</td></tr>
+  <tr><td style="padding: 8px;">Matrix Determinant Stability Coordinate (Δ)</td><td style="padding: 8px;">${metrics.matrixDeterminant.toFixed(4)}</td></tr>
+  <tr><td style="padding: 8px;">Primary Complex Eigenvalue (λ)</td><td style="padding: 8px;">${metrics.eigenvalueReal.toFixed(4)} ± ${metrics.eigenvalueImag.toFixed(4)}i</td></tr>
+`}
             </tbody>
           </table>
           <script>window.print();</script>
@@ -305,8 +311,8 @@ const handlePrintReport = () => {
                 <p className="text-xs text-zinc-500 max-w-md mt-1">Standard global web traffic requires an active checkout license subscription plan tier to run multi-axis processing parameters.</p>
               </div>
               <div className="flex gap-4 mt-2">
-                <a href="https://stripe.com" target="_blank" rel="noreferrer" className="px-4 py-1.5 text-xs bg-zinc-800 border border-zinc-700 hover:bg-zinc-700 rounded text-zinc-200 font-bold transition-all">Professional (\$29)</a>
-                <a href="https://stripe.com" target="_blank" rel="noreferrer" className="px-4 py-1.5 text-xs bg-[#00D2FF] text-zinc-950 font-bold hover:bg-[#00b2e0] rounded transition-all">Enterprise (\$149)</a>
+                <a href="https://stripe.com" target="_blank" rel="noreferrer" className="px-4 py-1.5 text-xs bg-zinc-800 border border-zinc-700 hover:bg-zinc-700 rounded text-zinc-200 font-bold transition-all">Professional ($29)</a>
+                <a href="https://stripe.com" target="_blank" rel="noreferrer" className="px-4 py-1.5 text-xs bg-[#00D2FF] text-zinc-950 font-bold hover:bg-[#00b2e0] rounded transition-all">Enterprise ($149)</a>
               </div>
             </div>
           )}
