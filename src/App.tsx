@@ -461,7 +461,7 @@ const handlePrintReport = () => {
                         ) ? "" : " " + meta.unit;
 
                         const symbolBadge = meta.sym
-                          ? ` <span style="color: #00D2FF; font-weight: bold; margin-left: 5px;">[${meta.sym}]</span>`
+                          ? ` <span style="color: #00D2FF; font-weight: bold; margin-left: 5px;">[\${meta.sym}]</span>`
                           : "";
 
                         return `
