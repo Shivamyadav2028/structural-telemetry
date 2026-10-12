@@ -190,7 +190,7 @@ const handlePrintReport = () => {
               <tr><th>Vibration Assessment Channel</th><th>Calculated Scalar Matrix Elements</th></tr>
             </thead>
             <tbody>
-              \${activeTier === "undergrad" ? `
+              ${activeTier === "undergrad" ? `
   <tr><th colSpan="2" style="background: #f8fafc; color: #0088cc; font-size: 11px; font-family: monospace; padding: 8px;">TRACK 1: UNDERGRADUATE LAB CORE CONSTANTS</th></tr>
   <tr><td style="padding: 8px;">Computed Structural Stiffness (k)</td><td style="padding: 8px; font-weight: bold;">${metrics.computedStiffness.toFixed(4)} N/m</td></tr>
   <tr><td style="padding: 8px;">Viscous Damping Coefficient (c)</td><td style="padding: 8px;">${metrics.dampingCoefficientC.toFixed(4)} N-s/m</td></tr>
