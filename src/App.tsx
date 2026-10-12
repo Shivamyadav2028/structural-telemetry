@@ -1,13 +1,8 @@
-mport { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useDropzone } from "react-dropzone";
 import * as XLSX from "xlsx";
-import {
-  Upload, FileSpreadsheet, ShieldCheck, Database, BarChart3,
-  Binary, Waves, Layers, Cpu, GraduationCap, Printer, ChevronDown, Activity, Loader2, Lock
-} from "lucide-react";
-
+import {Upload, FileSpreadsheet, ShieldCheck, Database, BarChart3, Binary, Waves, Layers, Cpu, GraduationCap, Printer, ChevronDown, Activity, Loader2, Lock} from "lucide-react";
 export type AcademicTier = "undergrad" | "masters" | "phd";
-
 export interface DataRow {
   Time?: number;
   displacement?: number;
@@ -16,7 +11,6 @@ export interface DataRow {
   acceleration?: number;
   [key: string]: any;
 }
-
 interface ComputationSuite {
   computedStiffness: number;
   dampingCoefficientC: number;
