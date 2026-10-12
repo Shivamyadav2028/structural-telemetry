@@ -41,6 +41,7 @@ export default function App() {
   const [departmentName, setDepartmentName] = useState<string>("Department of Mechanical & Aerospace Engineering");
   const [labAddress, setLabAddress] = useState<string>("Structural Dynamics Lab, Room 204");
   const [investigatorName, setInvestigatorName] = useState<string>("Shivam Kumar Yadav");
+  const [nominalMassInput, setNominalMassInput] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [isPremiumActive, setIsPremiumActive] = useState<boolean>(false);
 const [metrics, setMetrics] = useState({
@@ -64,7 +65,7 @@ const rundynamicCalculations = (dataRows: DataRow[]) => {
     const N = dataRows.length;
     
     // STRATEGY: Bind directly to your core scientific user state parameter with zero fake fallbacks
-    const mass = metrics.nominalMassM; 
+    const mass = Number(nominalMassInput); 
     const g = 9.80665;
 
     // Extract genuine data vectors dynamically from user dropdown mapping selections
@@ -321,7 +322,26 @@ const handlePrintReport = () => {
                 <input type="text" value={departmentName} onChange={(e) => setDepartmentName(e.target.value)} className="w-full bg-zinc-950 border border-zinc-800 rounded p-2 text-xs text-zinc-200" />
               </div>
             </div>
+            <div className="mt-3 border-t border-zinc-800/40 pt-3 font-mono">
+                <label className="text-[9px] text-zinc-500 font-bold uppercase block mb-1">Custom Rig Structural Mass (kg)</label>
+                <div className="relative flex items-center">
+                  <input 
+                    type="text" 
+                    value={nominalMassInput} 
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setNominalMassInput(val);
+                      setMetrics(prev => ({ ...prev, nominalMassM: Number(val) || 0 }));
+                      if (rows.length > 0) rundynamicCalculations(rows);
+                    }} 
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded p-2 text-xs text-zinc-200 focus:outline-none focus:border-[#00D2FF] pr-16 shadow-inner" 
+                    placeholder="Enter mass (e.g. 0.5)"
+                  />
+                  <span className="absolute right-3 text-[10px] text-zinc-600 font-bold">KG Vector</span>
+                </div>
+              </div>
           </div>
+          
 
           <div className="bg-zinc-900/50 border border-zinc-900 rounded-xl p-5 space-y-4">
             <h2 className="text-sm font-semibold tracking-wide text-zinc-400 uppercase flex items-center gap-2">
