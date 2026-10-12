@@ -28,7 +28,12 @@ export default function App() {
   const [filename, setFilename] = useState<string>("");
   const [uploadStatus, setUploadStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [rows, setRows] = useState<DataRow[]>([]);
-  const [activeTier, setActiveTier] = useState<AcademicTier>("undergrad");
+ const [activeTier, setActiveTier] = useState<AcademicTier>("undergrad");
+  const [availableHeaders, setAvailableHeaders] = useState<string[]>([]);
+  const [selectedXAxis, setSelectedXAxis] = useState<string>("");
+  const [selectedYAxis, setSelectedYAxis] = useState<string>("");
+  const [mappings, setMappings] = useState({ time: "", displacement: "", force: "", acceleration: "", strain: "", stress: "" });
+
   const [universityName, setUniversityName] = useState<string>("NMSU COLLEGE OF ENGINEERING");
   const [departmentName, setDepartmentName] = useState<string>("Department of Mechanical & Aerospace Engineering");
   const [labAddress, setLabAddress] = useState<string>("Structural Dynamics Lab, Room 204");
@@ -139,6 +144,23 @@ export default function App() {
         const workbook = XLSX.read(data, { type: "array" });
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         const items = XLSX.utils.sheet_to_json<DataRow>(sheet);
+        if (items.length > 0) {
+          const headers = Object.keys(items[0]);
+          setAvailableHeaders(headers);
+          const findMatch = (keys: string[]) => headers.find(h => keys.some(k => h.toLowerCase() === k.toLowerCase() || h.toLowerCase().includes(k.toLowerCase()))) || "";
+          setMappings({
+            time: findMatch(["time", "t", "sec"]),
+            displacement: findMatch(["displacement", "disp", "position", "x"]),
+            force: findMatch(["force", "load", "f", "p"]),
+            acceleration: findMatch(["acceleration", "accel", "acc", "a"]),
+            strain: findMatch(["strain", "ε"]),
+            stress: findMatch(["stress", "σ"])
+          });
+          setSelectedXAxis(findMatch(["time", "t", "sec"]) || headers[0] || "");
+          setSelectedYAxis(findMatch(["displacement", "disp", "position", "x"]) || headers[1] || "");
+          setRows(items);
+          setUploadStatus("success");
+        }
         setRows(items);
         runDynamicCalculations(items);
         setUploadStatus("success");
