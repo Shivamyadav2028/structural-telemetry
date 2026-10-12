@@ -60,7 +60,7 @@ export default function App() {
     const N = dataRows.length;
 
     const nominalMass = 0.75;
-    const meanDisplacement = dataRows.reduce((acc, r) => acc + Math.abs(r.displacement || 0), 0) / N || 0.001;
+    const meanDisplacement = dataRows.reduce((acc, r) => acc + Math.abs(r.displacement || r.Displacement || r.DISPLACEMENT || r.disp || r.Disp || r.Position || r.position || 0), 0) / N || 0.001;
     const constKCalc = (nominalMass * 9.80665) / meanDisplacement;
     const constWn = Math.sqrt(constKCalc / nominalMass);
     const constCriticalDamping = 2 * nominalMass * constWn;
@@ -107,9 +107,8 @@ export default function App() {
 
     const maxPos = Math.max(...rows.map(r => r.position || 1));
     const minPos = Math.min(...rows.map(r => r.position || 0));
-    const maxDisp = Math.max(...rows.map(r => r.displacement || 1));
-    const minDisp = Math.min(...rows.map(r => r.displacement || -1));
-
+    const maxDisp = Math.max(...rows.map(r => r.displacement || r.Displacement || r.DISPLACEMENT || r.disp || r.Disp || r.Position || r.position || 1));
+    const minDisp = Math.min(...rows.map(r => r.displacement || r.Displacement || r.DISPLACEMENT || r.disp || r.Disp || r.Position || r.position || -1));
     const posRange = maxPos - minPos || 1;
     const dispRange = maxDisp - minDisp || 1;
 
@@ -215,7 +214,7 @@ const handlePrintReport = () => {
       <header className="border-b border-zinc-900 bg-zinc-950/50 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <FileSpreadsheet className="h-5 w-5 text-[#00D2FF]" />
-          <span className="text-sm font-bold font-mono tracking-tight text-zinc-100">DataDoc AI Matrix Engine</span>
+          <span className="text-sm font-bold font-mono tracking-tight text-zinc-100">AeroMatrix AI Studio</span>
         </div>
         <div className="flex items-center space-x-4">
           <input
