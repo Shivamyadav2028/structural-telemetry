@@ -261,27 +261,219 @@ const handlePrintReport = () => {
             <strong>Academic Level Class:</strong> ${activeTier.toUpperCase()}
           </div>
           <table>
-            <thead>
-              <tr><th>Vibration Assessment Channel</th><th>Calculated Scalar Matrix Elements</th></tr>
-            </thead>
-            <tbody>
-              ${activeTier === "undergrad" ? `
-  <tr><th colSpan="2" style="background: #f8fafc; color: #0088cc; font-size: 11px; font-family: monospace; padding: 8px;">TRACK 1: UNDERGRADUATE LAB CORE CONSTANTS</th></tr>
-  <tr><td style="padding: 8px;">Computed Structural Stiffness (k)</td><td style="padding: 8px; font-weight: bold;">${metrics.computedStiffness.toFixed(4)} N/m</td></tr>
-  <tr><td style="padding: 8px;">Viscous Damping Coefficient (c)</td><td style="padding: 8px;">${metrics.dampingCoefficientC.toFixed(4)} N-s/m</td></tr>
-  <tr><td style="padding: 8px;">System Natural Frequency (ωn)</td><td style="padding: 8px;">${metrics.naturalFrequency.toFixed(4)} rad/s</td></tr>
-` : activeTier === "masters" ? `
-  <tr><th colSpan="2" style="background: #fef08a; color: #854d0e; font-size: 11px; font-family: monospace; padding: 8px;">TRACK 2: MASTER'S TRANSIENT SIGNAL ANALYSIS</th></tr>
-  <tr><td style="padding: 8px;">Logarithmic Decrement (δ)</td><td style="padding: 8px; font-weight: bold;">${metrics.logDecrement.toFixed(4)}</td></tr>
-  <tr><td style="padding: 8px;">Viscous Damping Ratio (ζ)</td><td style="padding: 8px;">${metrics.dampingRatioZeta.toFixed(5)}</td></tr>
-  <tr><td style="padding: 8px;">Damped Natural Frequency (ωd)</td><td style="padding: 8px;">${metrics.dampedFrequency.toFixed(4)} rad/s</td></tr>
-` : `
-  <tr><th colSpan="2" style="background: #f3e8ff; color: #6b21a8; font-size: 11px; font-family: monospace; padding: 8px;">TRACK 3: PhD SYSTEM STATE-SPACE STABILITY SUITE</th></tr>
-  <tr><td style="padding: 8px;">State-Space System Matrix Trace</td><td style="padding: 8px; font-weight: bold;">${metrics.stateSpaceTrace.toFixed(4)}</td></tr>
-  <tr><td style="padding: 8px;">Matrix Determinant Stability Coordinate (Δ)</td><td style="padding: 8px;">${metrics.matrixDeterminant.toFixed(4)}</td></tr>
-  <tr><td style="padding: 8px;">Primary Complex Eigenvalue (λ)</td><td style="padding: 8px;">${metrics.eigenvalueReal.toFixed(4)} ± ${metrics.eigenvalueImag.toFixed(4)}i</td></tr>
-`}
-            </tbody>
+                              <thead>
+                    <tr style="background-color: #0c0c0e; color: #ffffff; border-bottom: 2px solid #00D2FF; text-align: left;">
+                      <th style="padding: 10px; border: 1px solid #1f1f23; font-size: 11px; font-family: monospace; text-transform: uppercase; letter-spacing: 0.5px; width: 25%;">Discipline / Domain</th>
+                      <th style="padding: 10px; border: 1px solid #1f1f23; font-size: 11px; font-family: monospace; text-transform: uppercase; letter-spacing: 0.5px; width: 50%;">Verified Engineering Parameter Definition</th>
+                      <th style="padding: 10px; border: 1px solid #1f1f23; font-size: 11px; font-family: monospace; text-transform: uppercase; letter-spacing: 0.5px; width: 25%; text-align: right;">Quantified Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    \${(() => {
+                      // CENTRAL METADATA REGISTRY
+                      // Keep these identifiers consistent with the existing metrics object.
+                      // Mathematical markup in sym and unit is trusted static registry content.
+                      const REGISTRY = {
+                        computedStiffness: { cat: "Structural Dynamics", label: "Equivalent Structural Stiffness", sym: "k", unit: "N/m", mode: "fixed", prec: 4 },
+                        dampingCoefficientC: { cat: "Structural Dynamics", label: "Viscous Damping Coefficient", sym: "c", unit: "N-s/m", mode: "fixed", prec: 4 },
+                        naturalFrequency: { cat: "Structural Dynamics", label: "Undamped Natural Angular Frequency", sym: "&omega;<sub>n</sub>", unit: "rad/s", mode: "fixed", prec: 4 },
+                        appliedForceVector: { cat: "Structural Dynamics", label: "Mean Applied Force Vector", sym: "F<sub>avg</sub>", unit: "N", mode: "fixed", prec: 4 },
+                        nominalMassM: { cat: "Structural Dynamics", label: "Nominal Test Rig Mass Boundary", sym: "m", unit: "kg", mode: "fixed", prec: 4 },
+                        staticDeflection: { cat: "Structural Dynamics", label: "Mean Static Deflection Offset", sym: "&delta;<sub>st</sub>", unit: "m", mode: "fixed", prec: 4 },
+                        potentialEnergy: { cat: "Energy Systems", label: "Potential Strain Energy State", sym: "U", unit: "J", mode: "precision", prec: 5 },
+                        kineticEnergy: { cat: "Energy Systems", label: "Kinetic Energy Distribution State", sym: "T", unit: "J", mode: "precision", prec: 5 },
+                        totalMechanicalEnergy: { cat: "Energy Systems", label: "Total Mechanical System Energy", sym: "E", unit: "J", mode: "precision", prec: 5 },
+                        springForceMax: { cat: "Structural Dynamics", label: "Peak Expected Spring Restoring Force", sym: "F<sub>max</sub>", unit: "N", mode: "fixed", prec: 4 },
+                        logDecrement: { cat: "Signal Processing", label: "Logarithmic Amplitude Decay Decrement", sym: "&delta;", unit: "-", mode: "fixed", prec: 4 },
+                        dampingRatioZeta: { cat: "Signal Processing", label: "Damping Attenuation Ratio", sym: "&zeta;", unit: "-", mode: "precision", prec: 5 },
+                        dampedFrequency: { cat: "Signal Processing", label: "Damped Transient Angular Frequency", sym: "&omega;<sub>d</sub>", unit: "rad/s", mode: "fixed", prec: 4 },
+                        phaseShiftPhi: { cat: "Signal Processing", label: "Experimental Phase Shift Angle", sym: "&phi;", unit: "rad", mode: "fixed", prec: 4 },
+                        rmsEnergyDissipation: { cat: "Energy Systems", label: "RMS Structural Energy Dissipation", sym: "E<sub>diss</sub>", unit: "J/cyc", mode: "precision", prec: 5 },
+                        qualityFactorQ: { cat: "Signal Processing", label: "Resonant Quality Factor Parameter", sym: "Q", unit: "-", mode: "fixed", prec: 2 },
+                        transmissibilityRatio: { cat: "Structural Dynamics", label: "Force Transmissibility Ratio", sym: "TR", unit: "-", mode: "fixed", prec: 4 },
+                        excitationFrequency: { cat: "Signal Processing", label: "Estimated Harmonic Excitation Frequency", sym: "f<sub>w</sub>", unit: "Hz", mode: "fixed", prec: 4 },
+                        steadyStateAmplitude: { cat: "Signal Processing", label: "Steady State Vibration Amplitude", sym: "X<sub>0</sub>", unit: "m", mode: "fixed", prec: 4 },
+                        dynamicAmplificationFactor: { cat: "Structural Dynamics", label: "Dynamic Magnification Factor", sym: "DAF", unit: "-", mode: "fixed", prec: 4 },
+                        stateSpaceTrace: { cat: "Matrix Systems", label: "System Matrix Operator Trace", sym: "tr(A)", unit: "1/s", mode: "fixed", prec: 4 },
+                        matrixDeterminant: { cat: "Matrix Systems", label: "System Matrix Operator Determinant", sym: "det(A)", unit: "1/s&sup2;", mode: "fixed", prec: 4 },
+                        eigenvalueReal: { cat: "Matrix Systems", label: "Stability Eigenvalue (Real Part)", sym: "Re(&lambda;)", unit: "rad/s", mode: "fixed", prec: 4 },
+                        eigenvalueImag: { cat: "Matrix Systems", label: "Stability Eigenvalue (Imaginary Part)", sym: "Im(&lambda;)", unit: "rad/s", mode: "fixed", prec: 4 },
+                        lyapunovVExponent: { cat: "Matrix Systems", label: "Lyapunov Scalar Function Time Derivative", sym: "V&rsquo;", unit: "J/s", mode: "fixed", prec: 4 },
+                        kalmanObserverGainL1: { cat: "Matrix Systems", label: "State Observer Correction Gain L1", sym: "L<sub>1</sub>", unit: "1/s", mode: "fixed", prec: 4 },
+                        kalmanObserverGainL2: { cat: "Matrix Systems", label: "State Observer Correction Gain L2", sym: "L<sub>2</sub>", unit: "1/s&sup2;", mode: "fixed", prec: 4 },
+                        controllabilityGramianDet: { cat: "Matrix Systems", label: "Controllability Gramian Determinant", sym: "det(W<sub>c</sub>)", unit: "m&sup2;&middot;s", mode: "scientific", prec: 4 },
+                        observabilityGramianDet: { cat: "Matrix Systems", label: "Observability Gramian Determinant", sym: "det(W<sub>o</sub>)", unit: "kg&sup2;/s&sup3;", mode: "scientific", prec: 4 },
+                        bodePhaseMarginDeg: { cat: "Signal Processing", label: "Frequency Domain Phase Margin", sym: "&phi;<sub>m</sub>", unit: "deg", mode: "fixed", prec: 2 }
+                      };
+
+                      // Escape untrusted text before inserting it into HTML.
+                      const escapeText = (str) => {
+                        if (str === null || str === undefined) return "";
+
+                        return String(str)
+                          .replace(/&/g, "&amp;")
+                          .replace(/</g, "&lt;")
+                          .replace(/>/g, "&gt;")
+                          .replace(/"/g, "&quot;")
+                          .replace(/'/g, "&#x27;");
+                      };
+
+                      // Validate precision without treating zero as a missing value.
+                      const validatePrecision = (precision, mode) => {
+                        const fallback = mode === "precision" ? 5 : 4;
+
+                        if (
+                          typeof precision !== "number" ||
+                          !Number.isFinite(precision)
+                        ) {
+                          return fallback;
+                        }
+
+                        return Math.max(
+                          0,
+                          Math.min(20, Math.trunc(precision))
+                        );
+                      };
+
+                      // Format numerical values according to the requested mode.
+                      const formatValue = (value, mode, precision) => {
+                        if (
+                          value === undefined ||
+                          value === null ||
+                          value === ""
+                        ) {
+                          return "Missing Data";
+                        }
+
+                        // Do not silently convert booleans, arrays, or objects to numbers.
+                        if (typeof value === "boolean") {
+                          return "Invalid Input";
+                        }
+
+                        if (Array.isArray(value)) {
+                          return "Vector / Matrix Value";
+                        }
+
+                        if (typeof value === "object") {
+                          return "Unsupported Data Type";
+                        }
+
+                        // Accept numbers and non-empty numeric strings only.
+                        if (typeof value !== "number" && typeof value !== "string") {
+                          return "Invalid Input";
+                        }
+
+                        if (typeof value === "string" && value.trim() === "") {
+                          return "Invalid Input";
+                        }
+
+                        const num = typeof value === "number"
+                          ? value
+                          : Number(value.trim());
+
+                        if (Number.isNaN(num)) {
+                          return "Invalid Input";
+                        }
+
+                        // These are controlled HTML entities, not user-provided strings.
+                        if (!Number.isFinite(num)) {
+                          return num > 0 ? "&infin;" : "-&infin;";
+                        }
+
+                        const validMode = [
+                          "fixed",
+                          "scientific",
+                          "precision",
+                          "adaptive"
+                        ].includes(mode) ? mode : "adaptive";
+
+                        const validPrecision = validatePrecision(
+                          precision,
+                          validMode
+                        );
+
+                        switch (validMode) {
+                          case "fixed":
+                            return num.toFixed(validPrecision);
+
+                          case "scientific":
+                            return num.toExponential(validPrecision);
+
+                          case "precision":
+                            return num.toPrecision(
+                              Math.max(1, validPrecision)
+                            );
+
+                          case "adaptive": {
+                            const magnitude = Math.abs(num);
+
+                            if (num !== 0 && (
+                              magnitude >= 1e5 ||
+                              magnitude < 1e-4
+                            )) {
+                              return num.toExponential(
+                                Math.min(4, validPrecision)
+                              );
+                            }
+
+                            return num.toFixed(validPrecision);
+                          }
+
+                          default:
+                            return num.toFixed(4);
+                        }
+                      };
+
+                      // Prevent a malformed metrics payload from breaking report generation.
+                      const safeMetrics =
+                        metrics !== null &&
+                        typeof metrics === "object" &&
+                        !Array.isArray(metrics)
+                          ? metrics
+                          : {};
+
+                      return Object.entries(safeMetrics).map(([key, val]) => {
+                        const meta = REGISTRY[key] || {
+                          cat: "General Engineering Fields",
+                          label: key
+                            .replace(/([A-Z])/g, ' $1')
+                            .replace(/^./, s => s.toUpperCase()),
+                          sym: "",
+                          unit: "-",
+                          mode: "adaptive",
+                          prec: 4
+                        };
+
+                        const cleanCat = escapeText(meta.cat);
+                        const cleanLabel = escapeText(meta.label);
+                        const cleanValue = formatValue(
+                          val,
+                          meta.mode,
+                          meta.prec
+                        );
+
+                        // Registry symbols and units are trusted, static HTML markup.
+                        // Do not populate these fields directly from user-uploaded content.
+                        const cleanUnit = (
+                          meta.unit === "-" ||
+                          meta.unit === "dimensionless" ||
+                          meta.unit === ""
+                        ) ? "" : ` ${meta.unit}`;
+
+                        const symbolBadge = meta.sym
+                          ? ` <span style="color: #00D2FF; font-weight: bold; margin-left: 5px;">[${meta.sym}]</span>`
+                          : "";
+
+                        return `
+                          <tr style="border-bottom: 1px solid #e4e4e7;">
+                            <td style="padding: 8px; border: 1px solid #e4e4e7; font-size: 10px; font-family: monospace; font-weight: bold; color: #27272a;">${cleanCat}</td>
+                            <td style="padding: 8px; border: 1px solid #e4e4e7; font-size: 10px; font-family: monospace; color: #4b5563;">${cleanLabel}${symbolBadge}</td>
+                            <td style="padding: 8px; border: 1px solid #e4e4e7; text-align: right; font-weight: bold; font-size: 10px; font-family: monospace; color: #000000;">${cleanValue}${cleanUnit}</td>
+                          </tr>
+                        `;
+                      }).join("");
+                    })()}
+                  </tbody>
           </table>
           <script>window.print();</script>
         </body>
