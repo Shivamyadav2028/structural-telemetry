@@ -465,13 +465,14 @@ const handlePrintReport = () => {
                           ? ' <span style="color: #00D2FF; font-weight: bold; margin-left: 5px;">[' + meta.sym + ']</span>'
                           : "";
 
-                        return `
-                          <tr style="border-bottom: 1px solid #e4e4e7;">
-                            <td style="padding: 8px; border: 1px solid #e4e4e7; font-size: 10px; font-family: monospace; font-weight: bold; color: #27272a;">${cleanCat}</td>
-                            <td style="padding: 8px; border: 1px solid #e4e4e7; font-size: 10px; font-family: monospace; color: #4b5563;">${cleanLabel}${symbolBadge}</td>
-                            <td style="padding: 8px; border: 1px solid #e4e4e7; text-align: right; font-weight: bold; font-size: 10px; font-family: monospace; color: #000000;">${cleanValue}${cleanUnit}</td>
-                          </tr>
-                        `;
+                        
+                        return (
+                          '<tr style="border-bottom: 1px solid #e4e4e7;">' +
+                            '<td style="padding: 8px; border: 1px solid #e4e4e7; font-size: 10px; font-family: monospace; font-weight: bold; color: #27272a;">' + cleanCat + '</td>' +
+                            '<td style="padding: 8px; border: 1px solid #e4e4e7; font-size: 10px; font-family: monospace; color: #4b5563;">' + cleanLabel + symbolBadge + '</td>' +
+                            '<td style="padding: 8px; border: 1px solid #e4e4e7; text-align: right; font-weight: bold; font-size: 10px; font-family: monospace; color: #000000;">' + cleanValue + cleanUnit + '</td>' +
+                          '</tr>'
+                        );
                       }).join("");
                     })()}
                   </tbody>
