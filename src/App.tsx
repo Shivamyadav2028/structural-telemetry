@@ -45,9 +45,9 @@ export default function App() {
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [isPremiumActive, setIsPremiumActive] = useState<boolean>(false);
 const [metrics, setMetrics] = useState({
-    computedStiffness: 7354.9875, dampingCoefficientC: 22.2814, naturalFrequency: 99.0285, appliedForceVector: 7.3549, nominalMassM: 0.7500, staticDeflection: 0.0010, potentialEnergy: 0.0036, kineticEnergy: 0.0054, totalMechanicalEnergy: 0.0090, springForceMax: 14.7099,
-    logDecrement: 0.2558, dampingRatioZeta: 0.04017, dampedFrequency: 98.7018, phaseShiftPhi: 0.0804, rmsEnergyDissipation: 0.0142, qualityFactorQ: 12.4470, transmissibilityRatio: 1.0032, excitationFrequency: 12.5000, steadyStateAmplitude: 0.0125, dynamicAmplificationFactor: 1.0420,
-    stateSpaceTrace: -29.7086, matrixDeterminant: 9806.6580, eigenvalueReal: -14.8543, eigenvalueImag: 97.9081, lyapunovVExponent: -0.0402, kalmanObserverGainL1: 45.2104, kalmanObserverGainL2: 128.9430, controllabilityGramianDet: 1.4502e-4, observabilityGramianDet: 8.9210e-3, bodePhaseMarginDeg: 85.4200
+    computedStiffness: 0, dampingCoefficientC: 0, naturalFrequency: 0, appliedForceVector: 0, nominalMassM: 0, staticDeflection: 0, potentialEnergy: 0, kineticEnergy: 0, totalMechanicalEnergy: 0, springForceMax: 0,
+    logDecrement: 0, dampingRatioZeta: 0, dampedFrequency: 0, phaseShiftPhi: 0, rmsEnergyDissipation: 0, qualityFactorQ: 0, transmissibilityRatio: 0, excitationFrequency: 0, steadyStateAmplitude: 0, dynamicAmplificationFactor: 0,
+    stateSpaceTrace: 0, matrixDeterminant: 0, eigenvalueReal: 0, eigenvalueImag: 0, lyapunovVExponent: 0, kalmanObserverGainL1: 0, kalmanObserverGainL2: 0, controllabilityGramianDet: 0, observabilityGramianDet: 0, bodePhaseMarginDeg: 0
   });
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
