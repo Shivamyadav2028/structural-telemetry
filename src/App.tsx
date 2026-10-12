@@ -369,77 +369,69 @@ const handlePrintReport = () => {
               )}
             </div>
           </div>
-
-          {/* ACTIVE MULTI-TIER WORKSPACE MODULES (9 COMPLETE CUSTOMER CATEGORIES) */}
-          <div className="bg-zinc-900/40 border border-zinc-900 rounded-xl p-5 space-y-4 shadow-2xl backdrop-blur">
-            <h2 className="text-xs font-bold tracking-widest text-zinc-400 uppercase flex items-center gap-2 border-b border-zinc-800/60 pb-2 font-mono">
-              <Layers className="h-4 w-4 text-[#00D2FF]" /> Parameter Assessment Matrix
+      {/* COMPREHENSIVE RESEARCH MATRIX ARRAY (30 EXPANDED METHOD PARAMETERS) */}
+          <div className="bg-zinc-900/20 border border-zinc-900 rounded-xl p-5 space-y-4 shadow-xl backdrop-blur-sm">
+            <h2 className="text-xs font-bold tracking-widest text-zinc-400 uppercase flex items-center gap-2 border-b border-zinc-900 pb-2 font-mono">
+              <Layers className="h-4 w-4 text-[#00D2FF]" /> Multi-Tier Parameter Assessment Grid
             </h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* CATEGORY TRACK 1: UNDERGRADUATE LAB CORE */}
-              <div className={`p-4 rounded-xl border transition-all ${activeTier === 'undergrad' ? 'bg-zinc-900/90 border-[#00D2FF]/50 shadow-md shadow-[#00D2FF]/5' : 'bg-zinc-950/40 border-zinc-900 opacity-45'}`}>
-                <div className="flex items-center space-x-2 text-[#00D2FF] mb-3">
-                  <GraduationCap className="h-4 w-4" />
-                  <span className="text-[10px] font-bold uppercase tracking-wider font-mono">1. Undergrad Track</span>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-[11px]">
+              {/* UNDERGRAD CHANNELS BLOCK */}
+              <div className={`p-4 rounded-xl border transition-all duration-300 ${activeTier === 'undergrad' ? 'bg-zinc-900/60 border-[#00D2FF]/40 shadow-lg' : 'opacity-20'}`}>
+                <div className="flex items-center space-x-2 text-[#00D2FF] mb-3 border-b border-zinc-900 pb-2">
+                  <GraduationCap className="h-4.5 w-4.5" />
+                  <span className="text-[10px] font-bold uppercase tracking-wider">1. Undergrad Track</span>
                 </div>
-                <div className="space-y-2 text-xs">
-                  <div className="bg-zinc-950/60 p-2 rounded border border-zinc-900/60">
-                    <p className="text-[9px] text-zinc-500 uppercase font-bold">Stiffness (k)</p>
-                    <p className="font-mono text-zinc-200 font-bold mt-0.5">{metrics.computedStiffness.toFixed(4)} N/m</p>
-                  </div>
-                  <div className="bg-zinc-950/60 p-2 rounded border border-zinc-900/60">
-                    <p className="text-[9px] text-zinc-500 uppercase font-bold">Damping Variable (c)</p>
-                    <p className="font-mono text-zinc-200 font-bold mt-0.5">{metrics.dampingCoefficientC.toFixed(4)} N-s/m</p>
-                  </div>
-                  <div className="bg-zinc-950/60 p-2 rounded border border-zinc-900/60">
-                    <p className="text-[9px] text-zinc-500 uppercase font-bold">Natural Freq (ωn)</p>
-                    <p className="font-mono text-zinc-200 font-bold mt-0.5">{metrics.naturalFrequency.toFixed(4)} rad/s</p>
-                  </div>
+                <div className="space-y-2">
+                  <div className="flex flex-col border-b border-zinc-900 pb-1"><span>Equivalent Stiffness (k):</span><span className="text-zinc-200 font-bold mt-0.5">{metrics.computedStiffness.toFixed(4)} N/m</span></div>
+                  <div className="flex flex-col border-b border-zinc-900 pb-1"><span>Damping Coefficient (c):</span><span className="text-zinc-200 font-bold mt-0.5">{metrics.dampingCoefficientC.toFixed(4)} N-s/m</span></div>
+                  <div className="flex flex-col border-b border-zinc-900 pb-1"><span>Natural Freq (ωn):</span><span className="text-zinc-200 font-bold mt-0.5">{metrics.naturalFrequency.toFixed(4)} rad/s</span></div>
+                  <div className="flex flex-col border-b border-zinc-900 pb-1"><span>Applied Force Vector:</span><span className="text-zinc-400 mt-0.5">{metrics.appliedForceVector.toFixed(4)} N</span></div>
+                  <div className="flex flex-col border-b border-zinc-900 pb-1"><span>Nominal Mass (m):</span><span className="text-zinc-400 mt-0.5">{metrics.nominalMassM.toFixed(4)} kg</span></div>
+                  <div className="flex flex-col border-b border-zinc-900 pb-1"><span>Static Deflection:</span><span className="text-zinc-400 mt-0.5">{metrics.staticDeflection.toFixed(5)} m</span></div>
+                  <div className="flex flex-col border-b border-zinc-900 pb-1"><span>Potential Strain Energy:</span><span className="text-zinc-500 mt-0.5">{metrics.potentialEnergy.toExponential(4)} J</span></div>
+                  <div className="flex flex-col border-b border-zinc-900 pb-1"><span>Kinetic Energy Yield:</span><span className="text-zinc-500 mt-0.5">{metrics.kineticEnergy.toExponential(4)} J</span></div>
+                  <div className="flex flex-col border-b border-zinc-900 pb-1"><span>Total Mechanical Energy:</span><span className="text-zinc-500 mt-0.5">{metrics.totalMechanicalEnergy.toExponential(4)} J</span></div>
+                  <div className="flex flex-col pb-1"><span>Max Restoring Boundary:</span><span className="text-zinc-500 mt-0.5">{metrics.springForceMax.toFixed(4)} N</span></div>
                 </div>
               </div>
 
-              {/* CATEGORY TRACK 2: MASTER'S TRANSIENT SIGNAL ANALYSIS */}
-              <div className={`p-4 rounded-xl border transition-all ${activeTier === 'masters' ? 'bg-zinc-900/90 border-[#FFE600]/50 shadow-md shadow-[#FFE600]/5' : 'bg-zinc-950/40 border-zinc-900 opacity-45'}`}>
-                <div className="flex items-center space-x-2 text-[#FFE600] mb-3">
-                  <Waves className="h-4 w-4" />
-                  <span className="text-[10px] font-bold uppercase tracking-wider font-mono">2. Master's Core</span>
+              {/* MASTER'S CHANNELS BLOCK */}
+              <div className={`p-4 rounded-xl border transition-all duration-300 ${activeTier === 'masters' ? 'bg-zinc-900/60 border-[#FFE600]/40 shadow-lg' : 'opacity-20'}`}>
+                <div className="flex items-center space-x-2 text-[#FFE600] mb-3 border-b border-zinc-900 pb-2">
+                  <Waves className="h-4.5 w-4.5" />
+                  <span className="text-[10px] font-bold uppercase tracking-wider">2. Master's Core</span>
                 </div>
-                <div className="space-y-2 text-xs">
-                  <div className="bg-zinc-950/60 p-2 rounded border border-zinc-900/60">
-                    <p className="text-[9px] text-zinc-500 uppercase font-bold">Log Decrement (δ)</p>
-                    <p className="font-mono text-zinc-200 font-bold mt-0.5">{metrics.logDecrement.toFixed(4)}</p>
-                  </div>
-                  <div className="bg-zinc-950/60 p-2 rounded border border-zinc-900/60">
-                    <p className="text-[9px] text-zinc-500 uppercase font-bold">Damping Ratio (ζ)</p>
-                    <p className="font-mono text-zinc-200 font-bold mt-0.5">{metrics.dampingRatioZeta.toFixed(5)}</p>
-                  </div>
-                  <div className="bg-zinc-950/60 p-2 rounded border border-zinc-900/60">
-                    <p className="text-[9px] text-zinc-500 uppercase font-bold">Damped Freq (ωd)</p>
-                    <p className="font-mono text-zinc-200 font-bold mt-0.5">{metrics.dampedFrequency.toFixed(4)} rad/s</p>
-                  </div>
+                <div className="space-y-2">
+                  <div className="flex flex-col border-b border-zinc-900 pb-1"><span>Log Decrement (δ):</span><span className="text-zinc-200 font-bold mt-0.5">{metrics.logDecrement.toFixed(5)}</span></div>
+                  <div className="flex flex-col border-b border-zinc-900 pb-1"><span>Damping Ratio (ζ):</span><span className="text-zinc-200 font-bold mt-0.5">{metrics.dampingRatioZeta.toFixed(6)}</span></div>
+                  <div className="flex flex-col border-b border-zinc-900 pb-1"><span>Damped Freq (ωd):</span><span className="text-zinc-200 font-bold mt-0.5">{metrics.dampedFrequency.toFixed(4)} rad/s</span></div>
+                  <div className="flex flex-col border-b border-zinc-900 pb-1"><span>Phase Angle Shift (φ):</span><span className="text-zinc-400 mt-0.5">{metrics.phaseShiftPhi.toFixed(4)} rad</span></div>
+                  <div className="flex flex-col border-b border-zinc-900 pb-1"><span>RMS Energy Dissipation:</span><span className="text-zinc-400 mt-0.5">{metrics.rmsEnergyDissipation.toFixed(5)} J</span></div>
+                  <div className="flex flex-col border-b border-zinc-900 pb-1"><span>Quality Factor (Q):</span><span className="text-zinc-400 mt-0.5">{metrics.qualityFactorQ.toFixed(2)}</span></div>
+                  <div className="flex flex-col border-b border-zinc-900 pb-1"><span>Transmissibility Ratio:</span><span className="text-zinc-500 mt-0.5">{metrics.transmissibilityRatio.toFixed(4)}</span></div>
+                  <div className="flex flex-col border-b border-zinc-900 pb-1"><span>Excitation Frequency:</span><span className="text-zinc-500 mt-0.5">{metrics.excitationFrequency.toFixed(2)} Hz</span></div>
+                  <div className="flex flex-col border-b border-zinc-900 pb-1"><span>Steady State Amplitude:</span><span className="text-zinc-500 mt-0.5">{metrics.steadyStateAmplitude.toFixed(5)} m</span></div>
+                  <div className="flex flex-col pb-1"><span>Dynamic Amplification:</span><span className="text-zinc-500 mt-0.5">{metrics.dynamicAmplificationFactor.toFixed(4)}</span></div>
                 </div>
               </div>
 
-              {/* CATEGORY TRACK 3: PhD STATE-SPACE STABILITY SUITE */}
-              <div className={`p-4 rounded-xl border transition-all ${activeTier === 'phd' ? 'bg-zinc-900/90 border-[#A855F7]/50 shadow-md shadow-[#A855F7]/5' : 'bg-zinc-950/40 border-zinc-900 opacity-45'}`}>
-                <div className="flex items-center space-x-2 text-[#A855F7] mb-3">
-                  <Binary className="h-4 w-4" />
-                  <span className="text-[10px] font-bold uppercase tracking-wider font-mono">3. PhD Stability</span>
+              {/* PhD CHANNELS BLOCK */}
+              <div className={`p-4 rounded-xl border transition-all duration-300 ${activeTier === 'phd' ? 'bg-zinc-900/60 border-[#A855F7]/40 shadow-lg' : 'opacity-20'}`}>
+                <div className="flex items-center space-x-2 text-[#A855F7] mb-3 border-b border-zinc-900 pb-2">
+                  <Binary className="h-4.5 w-4.5" />
+                  <span className="text-[10px] font-bold uppercase tracking-wider">3. PhD Stability</span>
                 </div>
-                <div className="space-y-2 text-xs">
-                  <div className="bg-zinc-950/60 p-2 rounded border border-zinc-900/60">
-                    <p className="text-[9px] text-zinc-500 uppercase font-bold">Matrix Trace</p>
-                    <p className="font-mono text-zinc-200 font-bold mt-0.5">{metrics.stateSpaceTrace.toFixed(4)}</p>
-                  </div>
-                  <div className="bg-zinc-950/60 p-2 rounded border border-zinc-900/60">
-                    <p className="text-[9px] text-zinc-500 uppercase font-bold">Determinant (Δ)</p>
-                    <p className="font-mono text-zinc-200 font-bold mt-0.5">{metrics.matrixDeterminant.toFixed(4)}</p>
-                  </div>
-                  <div className="bg-zinc-950/60 p-2 rounded border border-zinc-900/60">
-                    <p className="text-[9px] text-zinc-500 uppercase font-bold">Eigenvalues (λ)</p>
-                    <p className="font-mono text-zinc-200 font-bold mt-0.5">{metrics.eigenvalueReal.toFixed(2)} ± {metrics.eigenvalueImag.toFixed(2)}i</p>
-                  </div>
+                <div className="space-y-2">
+                  <div className="flex flex-col border-b border-zinc-900 pb-1"><span>Matrix Trace [A]:</span><span className="text-zinc-200 font-bold mt-0.5">{metrics.stateSpaceTrace.toFixed(5)}</span></div>
+                  <div className="flex flex-col border-b border-zinc-900 pb-1"><span>Determinant (Δ):</span><span className="text-zinc-200 font-bold mt-0.5">{metrics.matrixDeterminant.toFixed(4)}</span></div>
+                  <div className="flex flex-col border-b border-zinc-900 pb-1"><span>Eigenvalues (λ):</span><span className="text-purple-400 font-bold mt-0.5">{metrics.eigenvalueReal.toFixed(3)} ± {metrics.eigenvalueImag.toFixed(3)}i</span></div>
+                  <div className="flex flex-col border-b border-zinc-900 pb-1"><span>Lyapunov Exponent:</span><span className="text-zinc-400 mt-0.5">{metrics.lyapunovVExponent.toFixed(5)}</span></div>
+                  <div className="flex flex-col border-b border-zinc-900 pb-1"><span>Kalman Observer L1:</span><span className="text-zinc-400 mt-0.5">{metrics.kalmanObserverGainL1.toFixed(4)}</span></div>
+                  <div className="flex flex-col border-b border-zinc-900 pb-1"><span>Kalman Observer L2:</span><span className="text-zinc-400 mt-0.5">{metrics.kalmanObserverGainL2.toFixed(4)}</span></div>
+                  <div className="flex flex-col border-b border-zinc-900 pb-1"><span>Controllability Gramian:</span><span className="text-zinc-500 mt-0.5">{metrics.controllabilityGramianDet.toExponential(4)}</span></div>
+                  <div className="flex flex-col border-b border-zinc-900 pb-1"><span>Observability Gramian:</span><span className="text-zinc-500 mt-0.5">{metrics.observabilityGramianDet.toExponential(4)}</span></div>
+                  <div className="flex flex-col pb-1"><span>Bode Phase Margin:</span><span className="text-zinc-400 mt-0.5">{metrics.bodePhaseMarginDeg.toFixed(2)}°</span></div>
                 </div>
               </div>
             </div>
