@@ -147,25 +147,38 @@ const rundynamicCalculations = (dataRows: DataRow[]) => {
       ctx.beginPath(); ctx.moveTo(i * (W / 10), 0); ctx.lineTo(i * (W / 10), H); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(0, i * (H / 6)); ctx.lineTo(W, i * (H / 6)); ctx.stroke();
     }
+if (!selectedXAxis || !selectedYAxis || rows.length === 0) return;
+    
+    const xValues = rows.map(r => Number(r[selectedXAxis]) || 0);
+    const yValues = rows.map(r => Number(r[selectedYAxis]) || 0);
 
-    const maxPos = Math.max(...rows.map(r => r.position || 1));
-    const minPos = Math.min(...rows.map(r => r.position || 0));
-    const maxDisp = Math.max(...rows.map(r => r.displacement || r.Displacement || r.DISPLACEMENT || r.disp || r.Disp || r.Position || r.position || 1));
-    const minDisp = Math.min(...rows.map(r => r.displacement || r.Displacement || r.DISPLACEMENT || r.disp || r.Disp || r.Position || r.position || -1));
-    const posRange = maxPos - minPos || 1;
-    const dispRange = maxDisp - minDisp || 1;
+    const maxX = Math.max(...xValues);
+    const minX = Math.min(...xValues);
+    const maxY = Math.max(...yValues);
+    const minY = Math.min(...yValues);
 
-    ctx.strokeStyle = activeTier === "undergrad" ? "#00D2FF" : activeTier === "masters" ? "#FFE600" : "#AA00FF";
+    const xRange = maxX - minX || 1;
+    const yRange = maxY - minY || 1;
+
+    // STRATEGY: Render real-time color schemes based on the active tracking depth layer
+    ctx.strokeStyle = activeTier === "undergrad" ? "#00D2FF" : activeTier === "masters" ? "#FFE600" : "#A855F7";
     ctx.lineWidth = 2.5;
     ctx.beginPath();
 
     rows.forEach((row, i) => {
-      const x = ((row.position || 0) - minPos) / posRange * (W - 60) + 30;
-      const y = H - (((row.displacement || 0) - minDisp) / dispRange * (H - 40) + 20);
-      if (i === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
+      const rawX = Number(row[selectedXAxis]) || 0;
+      const rawY = Number(row[selectedYAxis]) || 0;
+
+      // Project genuine spreadsheet coordinates directly onto the pixel canvas dimensions
+      const xPixel = ((rawX - minX) / xRange) * (W - 80) + 40;
+      const yPixel = H - (((rawY - minY) / yRange) * (H - 60) + 30);
+
+      if (i === 0) ctx.moveTo(xPixel, yPixel);
+      else ctx.lineTo(xPixel, yPixel);
     });
+
     ctx.stroke();
+    
   }, [rows, activeTier]);
 
   useEffect(() => {
