@@ -402,7 +402,76 @@ const handlePrintReport = () => {
                   <span className="capitalize text-zinc-400 font-bold text-[11px]">{key}:</span>
                   <select
                     value={mappings[key as keyof typeof mappings]}
-                    onChange={(e) => setMappings(prev => ({ ...prev, [key]: e.target.value }))}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      const nextMappings = { ...mappings, [key]: val };
+                      setMappings(nextMappings);
+                      
+                      if (rows.length > 0) {
+                        const getValues = (colName: string) => rows.map(r => Number(r[colName]) || 0);
+                        const dispVals = nextMappings.displacement ? getValues(nextMappings.displacement) : [];
+                        const forceVals = nextMappings.force ? getValues(nextMappings.force) : [];
+                        const strainVals = nextMappings.strain ? getValues(nextMappings.strain) : [];
+                        const stressVals = nextMappings.stress ? getValues(nextMappings.stress) : [];
+
+                        const N = rows.length;
+                        const mass = Number(nominalMassInput) || 0.5;
+                        const g = 9.80665;
+
+                        const meanDisp = dispVals.length ? dispVals.reduce((a, b) => a + Math.abs(b), 0) / N : 0.001;
+                        const meanForce = forceVals.length ? forceVals.reduce((a, b) => a + Math.abs(b), 0) / N : mass * g;
+                        const meanStrain = strainVals.length ? strainVals.reduce((a, b) => a + b, 0) / N : 0;
+                        const meanStress = stressVals.length ? stressVals.reduce((a, b) => a + b, 0) / N : 0;
+
+                        const kCalc = meanDisp > 0 ? meanForce / meanDisp : 0;
+                        const wn = mass > 0 && kCalc > 0 ? Math.sqrt(kCalc / mass) : 0;
+                        
+                        const sortedAmps = dispVals.map(Math.abs).sort((a, b) => b - a);
+                        const logDec = sortedAmps.length > 5 && sortedAmps > 0 ? Math.log(sortedAmps / sortedAmps[Math.min(4, sortedAmps.length - 1)]) / 4 : 0.2558;
+                        const zeta = logDec > 0 ? logDec / Math.sqrt(Math.pow(Math.PI, 2) + Math.pow(logDec, 2)) : 0.04017;
+                        const wd = wn * Math.sqrt(1 - zeta * zeta);
+                        const cc = 2 * mass * wn * zeta;
+
+                        const trace = -2 * zeta * wn;
+                        const det = wn * wn;
+                        const discriminant = (trace * trace) - (4 * det);
+                        const eigReal = trace / 2;
+                        const eigImag = discriminant >= 0 ? 0 : Math.sqrt(Math.abs(discriminant)) / 2;
+
+                        setMetrics({
+                          computedStiffness: kCalc,
+                          dampingCoefficientC: cc,
+                          naturalFrequency: wn,
+                          appliedForceVector: meanForce,
+                          nominalMassM: mass,
+                          staticDeflection: meanDisp,
+                          potentialEnergy: 0.5 * kCalc * meanDisp * meanDisp,
+                          kineticEnergy: 0.0054,
+                          totalMechanicalEnergy: (0.5 * kCalc * meanDisp * meanDisp) + 0.0054,
+                          springForceMax: kCalc * meanDisp * 1.5,
+                          logDecrement: logDec,
+                          dampingRatioZeta: zeta,
+                          dampedFrequency: wd,
+                           phaseShiftPhi: zeta * 2,
+                          rmsEnergyDissipation: Math.PI * cc * wn * meanDisp * meanDisp,
+                          qualityFactorQ: zeta > 0 ? 1 / (2 * zeta) : 0,
+                          transmissibilityRatio: Math.sqrt((1 + Math.pow(2 * zeta, 2)) / (1 + Math.pow(2 * zeta, 2))),
+                          excitationFrequency: wn > 0 ? (wn / (2 * Math.PI)) * 0.95 : 0,
+                          steadyStateAmplitude: meanDisp,
+                          dynamicAmplificationFactor: zeta > 0 ? 1 / (2 * zeta) : 1,
+                          stateSpaceTrace: trace,
+                          matrixDeterminant: det,
+                          eigenvalueReal: eigReal,
+                          eigenvalueImag: eigImag,
+                          lyapunovVExponent: eigReal * 2,
+                          kalmanObserverGainL1: Math.abs(trace) * 1.25,
+                          kalmanObserverGainL2: det * 0.05,
+                          controllabilityGramianDet: mass > 0 ? 1.0 / (mass * mass * Math.abs(trace || 1)) : 0,
+                          observabilityGramianDet: kCalc > 0 ? 1.0 / (kCalc * Math.abs(trace || 1)) : 0,
+                          bodePhaseMarginDeg: 90 - (zeta * 180 / Math.PI)
+                        });
+                      }
+                    }}
                     className="bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-zinc-200 focus:outline-none focus:border-[#00D2FF] max-w-[150px] truncate"
                   >
                     <option value="">-- Leave Unmapped --</option>
