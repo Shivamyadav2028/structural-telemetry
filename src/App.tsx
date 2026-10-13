@@ -51,17 +51,17 @@ function MainDashboard() {
   const [rows, setRows] = useState<DataRow[]>([]);
   const [activeTier, setActiveTier] = useState<AcademicTier>("undergraduate");
   const [availableHeaders, setAvailableHeaders] = useState<string[]>([]);
-  const [selectedXAxis, setSelectedXAxis] = useState<string>("");
-  const [selectedYAxis, setSelectedYAxis] = useState<string>("");
+  const [, setSelectedXAxis] = useState<string>("");
+  const [, setSelectedYAxis] = useState<string>("");
   const [, setMappings] = useState({ time: "", displacement: "", force: "", acceleration: "", strain: "", stress: "" });
-  
+ 
   const [universityName, setUniversityName] = useState<string>("NMSU COLLEGE OF ENGINEERING");
   const [departmentName, setDepartmentName] = useState<string>("Department of Mechanical & Aerospace Engineering");
   const [labAddress, setLabAddress] = useState<string>("Structural Dynamics Lab, Room 204");
   const [investigatorName, setInvestigatorName] = useState<string>("Shivam Kumar Yadav");
   const [investigatorId, setInvestigatorId] = useState<string>("ID-NMSU-2026-09");
   const [nominalMassInput, setNominalMassInput] = useState<string>("0.75");
-  
+ 
   const [licenseKeyInput, setLicenseKeyInput] = useState<string>("AM-FOUNDER-2026");
   const [isPremiumActive, setIsPremiumActive] = useState<boolean>(true);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -142,40 +142,6 @@ function MainDashboard() {
       modalParticipationFactor: 1.12,
       frequencyResponsePeak: 14.2,
       bandwidth3dB: 4.5
-    });
-  };
-
-    setMetrics({
-      computedStiffness: kCalc,
-      dampingCoefficientC: cc,
-      naturalFrequency: wn,
-      appliedForceVector: meanForce,
-      nominalMassM: mass,
-      staticDeflection: meanDisp,
-      potentialEnergy: 0.5 * kCalc * meanDisp * meanDisp,
-      kineticEnergy: 0.5 * mass * Math.pow(wn * meanDisp, 2),
-      totalMechanicalEnergy: (0.5 * kCalc * meanDisp * meanDisp) + (0.5 * mass * Math.pow(wn * meanDisp, 2)),
-      springForceMax: kCalc * meanDisp * 1.414,
-      logDecrement: 0.12,
-      dampingRatioZeta: zeta,
-      dampedFrequency: wd,
-      phaseShiftPhi: Math.atan2(2 * zeta, 1),
-      rmsEnergyDissipation: Math.PI * cc * wn * meanDisp * meanDisp,
-      qualityFactorQ: 25,
-      transmissibilityRatio: 1.05,
-      excitationFrequency: wn / (2 * Math.PI),
-      steadyStateAmplitude: meanDisp * 1.1,
-      dynamicAmplificationFactor: 12.5,
-      stateSpaceTrace: trace,
-      matrixDeterminant: det,
-      eigenvalueReal: trace / 2,
-      eigenvalueImag: Math.abs(det - (trace * trace) / 4) ** 0.5 / 2,
-      lyapunovVExponent: trace,
-      kalmanObserverGainL1: Math.abs(trace) * 1.25,
-      kalmanObserverGainL2: det * 0.05,
-      controllabilityGramianDet: 0.001,
-      observabilityGramianDet: 0.001,
-      bodePhaseMarginDeg: 85.4
     });
   };
 
@@ -265,7 +231,7 @@ function MainDashboard() {
     downloadAnchor.remove();
   };
 
- const handlePrintReport = () => {
+  const handlePrintReport = () => {
     const printWindow = window.open("", "_blank");
     if (!printWindow) return;
     printWindow.document.write(`
@@ -279,7 +245,7 @@ h1 { font-size: 16px; font-weight: 800; text-transform: uppercase; margin: 0 0 6
 .meta { font-size: 11px; color: #52525b; font-family: monospace; }
 table { width: 100%; border-collapse: collapse; margin-top: 15px; font-family: monospace; }
 th, td { border: 1px solid #e4e4e7; padding: 10px 12px; font-size: 12px; text-align: left; }
-th { background: #09090b; color: #ffffff; font-weight: 700; text-transform: uppercase; font-size: 9px; letter-spacing: 0.05em; padding-top:10px; padding-bottom: 10px; } }
+th { background: #09090b; color: #ffffff; font-weight: 700; text-transform: uppercase; font-size: 9px; letter-spacing: 0.05em; padding-top: 10px; padding-bottom: 10px; }
 tr:nth-child(even) { background: #fafafa; }
 .footer { margin-top: 30px; font-size: 10px; color: #71717a; font-family: monospace; text-align: right; }
 </style>
@@ -420,14 +386,14 @@ tr:nth-child(even) { background: #fafafa; }
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="text-[9px] text-zinc-500 uppercase font-bold block mb-1">X-Axis</label>
-                  <select value={selectedXAxis} onChange={(e) => setSelectedXAxis(e.target.value)} className="w-full bg-zinc-950 border border-zinc-800 rounded p-1.5 text-zinc-200">
+                  <select onChange={(e) => setSelectedXAxis(e.target.value)} className="w-full bg-zinc-950 border border-zinc-800 rounded p-1.5 text-zinc-200">
                     <option value="">Select...</option>
                     {availableHeaders.map(h => <option key={h} value={h}>{h}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="text-[9px] text-zinc-500 uppercase font-bold block mb-1">Y-Axis</label>
-                  <select value={selectedYAxis} onChange={(e) => setSelectedYAxis(e.target.value)} className="w-full bg-zinc-950 border border-zinc-800 rounded p-1.5 text-zinc-200">
+                  <select onChange={(e) => setSelectedYAxis(e.target.value)} className="w-full bg-zinc-950 border border-zinc-800 rounded p-1.5 text-zinc-200">
                     <option value="">Select...</option>
                     {availableHeaders.map(h => <option key={h} value={h}>{h}</option>)}
                   </select>
@@ -525,6 +491,7 @@ tr:nth-child(even) { background: #fafafa; }
       </main>
     </div>
   );
+}
 
 export default function App() {
   return (
@@ -533,3 +500,4 @@ export default function App() {
     </ErrorBoundary>
   );
 }
+
