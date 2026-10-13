@@ -226,32 +226,48 @@ function MainDashboard() {
     downloadAnchor.remove();
   };
 
-  const handlePrintReport = () => {
+ const handlePrintReport = () => {
     const printWindow = window.open("", "_blank");
     if (!printWindow) return;
     printWindow.document.write(`
 <html>
-<head><title>AeroMatrix Report - ${universityName}</title>
+<head>
+<title>AeroMatrix Report - ${universityName}</title>
 <style>
-body { font-family: monospace; padding: 30px; color: #111; background: #fff; }
-h1 { font-size: 18px; border-bottom: 2px solid #000; padding-bottom: 8px; text-transform: uppercase; }
-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-th, td { border: 1px solid #ccc; padding: 8px; font-size: 11px; text-align: left; }
-th { background: #002B49; color: #fff; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; padding: 40px; color: #18181b; background: #fff; }
+.header { border-bottom: 2px solid #09090b; padding-bottom: 12px; margin-bottom: 24px; }
+h1 { font-size: 16px; font-weight: 800; text-transform: uppercase; margin: 0 0 6px 0; color: #09090b; }
+.meta { font-size: 11px; color: #52525b; font-family: monospace; }
+table { width: 100%; border-collapse: collapse; margin-top: 15px; font-family: monospace; }
+th, td { border: 1px solid #e4e4e7; padding: 10px 12px; font-size: 12px; text-align: left; }
+th { background: #09090b; color: #fff; font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 0.05em; }
+tr:nth-child(even) { background: #fafafa; }
+.footer { margin-top: 30px; font-size: 10px; color: #71717a; font-family: monospace; text-align: right; }
 </style>
 </head>
 <body>
-<h1>${universityName} - ${departmentName}</h1>
-<p><strong>Lab:</strong> ${labAddress} | <strong>Investigator:</strong> ${investigatorName} (${investigatorId}) | <strong>Level:</strong> ${activeTier.toUpperCase()}</p>
+<div class="header">
+  <h1>${universityName} &mdash; ${departmentName}</h1>
+  <div class="meta">Lab: ${labAddress} | Investigator: ${investigatorName} (${investigatorId}) | Level: ${activeTier.toUpperCase()}</div>
+</div>
 <table>
-<tr><th>Engineering Parameter</th><th>Symbol / Notation</th><th>Quantified Value</th></tr>
-<tr><td>Equivalent Structural Stiffness</td><td>k</td><td>${metrics.computedStiffness.toFixed(4)} N/m</td></tr>
-<tr><td>Viscous Damping Coefficient</td><td>c</td><td>${metrics.dampingCoefficientC.toFixed(4)} N-s/m</td></tr>
-<tr><td>Natural Angular Frequency</td><td>&omega;n</td><td>${metrics.naturalFrequency.toFixed(4)} rad/s</td></tr>
-<tr><td>Damping Attenuation Ratio</td><td>&zeta;</td><td>${metrics.dampingRatioZeta.toFixed(5)}</td></tr>
-<tr><td>System Matrix Trace</td><td>tr(A)</td><td>${metrics.stateSpaceTrace.toFixed(4)} 1/s</td></tr>
-<tr><td>Stability Eigenvalues</td><td>&lambda;</td><td>${metrics.eigenvalueReal.toFixed(3)} ± ${metrics.eigenvalueImag.toFixed(3)}i</td></tr>
+  <thead>
+    <tr>
+      <th>Engineering Parameter</th>
+      <th>Symbol / Notation</th>
+      <th>Quantified Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Equivalent Structural Stiffness</td><td>k</td><td><strong>${metrics.computedStiffness.toFixed(4)}</strong> N/m</td></tr>
+    <tr><td>Viscous Damping Coefficient</td><td>c</td><td><strong>${metrics.dampingCoefficientC.toFixed(4)}</strong> N-s/m</td></tr>
+    <tr><td>Natural Angular Frequency</td><td>&omega;<sub>n</sub></td><td><strong>${metrics.naturalFrequency.toFixed(4)}</strong> rad/s</td></tr>
+    <tr><td>Damping Attenuation Ratio</td><td>&zeta;</td><td><strong>${metrics.dampingRatioZeta.toFixed(5)}</strong></td></tr>
+    <tr><td>System Matrix Trace</td><td>tr(A)</td><td><strong>${metrics.stateSpaceTrace.toFixed(4)}</strong> 1/s</td></tr>
+    <tr><td>Stability Eigenvalues</td><td>&lambda;</td><td><strong>${metrics.eigenvalueReal.toFixed(3)} &plusmn; ${metrics.eigenvalueImag.toFixed(3)}i</strong></td></tr>
+  </tbody>
 </table>
+<div class="footer">AeroMatrix AI Studio &bull; Enterprise Academic Dynamics Suite</div>
 <script>window.print();</script>
 </body>
 </html>
