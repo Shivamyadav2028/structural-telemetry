@@ -248,7 +248,27 @@ const handlePrintReport = () => {
             .meta-box { margin-bottom: 30px; line-height: 1.6; }
             table { width: 100%; border-collapse: collapse; margin-top: 20px; }
             th, td { border: 1px solid #000; padding: 10px; text-align: left; }
-            th { background: #f2f2f2; }
+            thead th {
+  background: #102A43;
+  color: #FFFFFF;
+  font-weight: 800;
+  border: 1px solid #29445F;
+  border-bottom: 4px solid #D4A843;
+  padding: 12px 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+tbody tr:nth-child(even) {
+  background: #F1F5F9;
+}
+tbody tr:nth-child(odd) {
+  background: #FFFFFF;
+}
+tbody td {
+  border: 1px solid #D8E0E8;
+  padding: 9px 10px;
+  color: #172033;
+}
           </style>
         </head>
         <body>
