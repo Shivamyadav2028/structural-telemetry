@@ -269,7 +269,7 @@ const handlePrintReport = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    \${(() => {
+                    ${(() => {
                       // CENTRAL METADATA REGISTRY
                       // Keep these identifiers consistent with the existing metrics object.
                       // Mathematical markup in sym and unit is trusted static registry content.
