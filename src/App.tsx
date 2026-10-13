@@ -87,12 +87,15 @@ const rundynamicCalculations = (dataRows: DataRow[]) => {
     const kCalc = meanDisp > 0 ? meanForce / meanDisp : 0;
     const wn = mass > 0 && kCalc > 0 ? Math.sqrt(kCalc / mass) : 0;
     
-    const sortedAmps = dispVals.map(Math.abs).sort((a, b) => b - a);
-     const logDec =   sortedAmps.length > 5 && sortedAmps[0] > 0 && sortedAmps[4] > 0     ? Math.log(sortedAmps[0] / sortedAmps[4]) / 4     : 0; ? Math.log(sortedAmps / sortedAmps[Math.min(4, sortedAmps.length - 1)]) / 4 : 0;
-    const zeta = logDec > 0 ? logDec / Math.sqrt(Math.pow(Math.PI, 2) + Math.pow(logDec, 2)) : 0;
-    const wd = wn * Math.sqrt(1 - zeta * zeta);
-    const cc = 2 * mass * wn * zeta;
-
+    
+const sortedAmps = dispVals.map(Math.abs).sort((a, b) => b - a);
+const logDec =
+  sortedAmps.length > 5 && sortedAmps[0] > 0 && sortedAmps[4] > 0
+    ? Math.log(sortedAmps[0] / sortedAmps[4]) / 4
+    : 0;
+const zeta = logDec > 0 ? logDec / Math.sqrt(Math.pow(Math.PI, 2) + Math.pow(logDec, 2)) : 0;
+const wd = wn * Math.sqrt(1 - zeta * zeta);
+const cc = 2 * mass * wn * zeta;
     // High-fidelity state-space stability parameters for PhD analysis layers
     const trace = -2 * zeta * wn;
     const det = wn * wn;
