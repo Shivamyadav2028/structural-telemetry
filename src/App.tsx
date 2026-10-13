@@ -88,7 +88,7 @@ const rundynamicCalculations = (dataRows: DataRow[]) => {
     const wn = mass > 0 && kCalc > 0 ? Math.sqrt(kCalc / mass) : 0;
     
     const sortedAmps = dispVals.map(Math.abs).sort((a, b) => b - a);
-    const logDec = sortedAmps.length > 5 && sortedAmps > 0 ? Math.log(sortedAmps / sortedAmps[Math.min(4, sortedAmps.length - 1)]) / 4 : 0;
+     const logDec =   sortedAmps.length > 5 && sortedAmps[0] > 0 && sortedAmps[4] > 0     ? Math.log(sortedAmps[0] / sortedAmps[4]) / 4     : 0; ? Math.log(sortedAmps / sortedAmps[Math.min(4, sortedAmps.length - 1)]) / 4 : 0;
     const zeta = logDec > 0 ? logDec / Math.sqrt(Math.pow(Math.PI, 2) + Math.pow(logDec, 2)) : 0;
     const wd = wn * Math.sqrt(1 - zeta * zeta);
     const cc = 2 * mass * wn * zeta;
@@ -215,7 +215,7 @@ if (!selectedXAxis || !selectedYAxis || rows.length === 0) return;
           setUploadStatus("success");
         }
         setRows(items);
-        runDynamicCalculations(items);
+        rundynamicCalculations(items);
         setUploadStatus("success");
       } catch (err) {
         setUploadStatus("error");
@@ -649,7 +649,7 @@ const handlePrintReport = () => {
                         const wn = mass > 0 && kCalc > 0 ? Math.sqrt(kCalc / mass) : 0;
                         
                         const sortedAmps = dispVals.map(Math.abs).sort((a, b) => b - a);
-                        const logDec = sortedAmps.length > 5 && sortedAmps > 0 ? Math.log(sortedAmps / sortedAmps[Math.min(4, sortedAmps.length - 1)]) / 4 : 0.2558;
+                         const logDec =   sortedAmps.length > 5 && sortedAmps[0] > 0 && sortedAmps[4] > 0     ? Math.log(sortedAmps[0] / sortedAmps[4]) / 4     : 0; ? Math.log(sortedAmps / sortedAmps[Math.min(4, sortedAmps.length - 1)]) / 4 : 0.2558;
                         const zeta = logDec > 0 ? logDec / Math.sqrt(Math.pow(Math.PI, 2) + Math.pow(logDec, 2)) : 0.04017;
                         const wd = wn * Math.sqrt(1 - zeta * zeta);
                         const cc = 2 * mass * wn * zeta;
