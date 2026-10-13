@@ -797,8 +797,7 @@ const handlePrintReport = () => {
               </div>
             </div>
           </div>
-
-          {!isPremiumActive && (
+  {!isPremiumActive && (
             <div className="bg-zinc-900/30 border border-dashed border-zinc-800 rounded-xl p-6 flex flex-col items-center text-center space-y-4">
               <Lock className="h-6 w-6 text-zinc-600" />
               <div>
