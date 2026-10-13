@@ -813,6 +813,5 @@ const handlePrintReport = () => {
                 <a href="https://buy.stripe.com/3cI9ASfGh7Podxv2lYgMw05" target="_blank" rel="noopener noreferrer" className="px-4 py-1.5 text-xs bg-[#00D2FF] text-zinc-950 font-bold hover:bg-[#00b2e0] rounded transition-all">Enterprise ($149)</a>
              </div>
         </div>
-    </div>
   )}
 </div>
