@@ -549,8 +549,15 @@ const handlePrintReport = () => {
                 <label className="text-[10px] text-zinc-500 uppercase font-bold block mb-1">Department Branch</label>
                 <input type="text" value={departmentName} onChange={(e) => setDepartmentName(e.target.value)} className="w-full bg-zinc-950 border border-zinc-800 rounded p-2 text-xs text-zinc-200" />
               </div>
-            </div>
-            <div className="mt-3 border-t border-zinc-800/40 pt-3 font-mono">
+           <div>
+                  <label className="text-[10px] text-zinc-500 uppercase font-bold block mb-1">Laboratory Address</label>
+                  <input type="text" value={labAddress} onChange={(e) => setLabAddress(e.target.value)} className="w-full bg-zinc-950 border border-zinc-800 rounded p-2 text-xs text-zinc-200 focus:outline-none focus:border-[#00D2FF]" />
+                </div>
+                <div>
+                  <label className="text-[10px] text-zinc-500 uppercase font-bold block mb-1">Principal Investigator</label>
+                  <input type="text" value={investigatorName} onChange={(e) => setInvestigatorName(e.target.value)} className="w-full bg-zinc-950 border border-zinc-800 rounded p-2 text-xs text-zinc-200 focus:outline-none focus:border-[#00D2FF]" />
+                </div>   
+              <div className="mt-3 border-t border-zinc-800/40 pt-3 font-mono">
                 <label className="text-[9px] text-zinc-500 font-bold uppercase block mb-1">Custom Rig Structural Mass (kg)</label>
                 <div className="relative flex items-center">
                   <input 
