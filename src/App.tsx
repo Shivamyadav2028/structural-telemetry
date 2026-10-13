@@ -242,34 +242,33 @@ const handlePrintReport = () => {
       <html>
         <head>
           <title>Structural Report - ${universityName}</title>
-          <style>
-            body { font-family: monospace; padding: 40px; background: #fff; color: #000; }
-            h1 { font-size: 20px; border-bottom: 2px solid #000; padding-bottom: 10px; text-transform: uppercase; }
-            .meta-box { margin-bottom: 30px; line-height: 1.6; }
-            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-            th, td { border: 1px solid #000; padding: 10px; text-align: left; }
-            thead th {
-  background: #102A43;
-  color: #FFFFFF;
-  font-weight: 800;
-  border: 1px solid #29445F;
-  border-bottom: 4px solid #D4A843;
-  padding: 12px 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-tbody tr:nth-child(even) {
-  background: #F1F5F9;
-}
-tbody tr:nth-child(odd) {
-  background: #FFFFFF;
-}
-tbody td {
-  border: 1px solid #D8E0E8;
-  padding: 9px 10px;
-  color: #172033;
-}
-          </style>
+         <style>
+                    html, body {
+                      -webkit-print-color-adjust: exact !important;
+                      print-color-adjust: exact !important;
+                      font-family: monospace;
+                      padding: 40px;
+                      background: #ffffff;
+                      color: #000000;
+                    }
+                    h1 { font-size: 20px; border-bottom: 2px solid #000; padding-bottom: 10px; text-transform: uppercase; }
+                    .meta-box { margin-bottom: 30px; line-height: 1.6; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 20px; page-break-inside: auto; }
+                    tr { page-break-inside: avoid; page-break-after: auto; }
+                    th, td { border: 1px solid #cbd5e1; padding: 10px; text-align: left; }
+                    thead th {
+                      background: #102A43 !important;
+                      color: #ffffff !important;
+                      font-weight: 800;
+                      border: 1px solid #102A43;
+                      border-bottom: 4px solid #00D2FF;
+                      padding: 12px 10px;
+                      text-transform: uppercase;
+                      letter-spacing: 0.5px;
+                    }
+                    tbody tr:nth-child(even) { background: #F1F5F9 !important; }
+                    tbody tr:nth-child(odd) { background: #ffffff !important; }
+                  </style>
         </head>
         <body>
           <h1>${universityName} - LABORATORY ANALYSIS TEST SPECIFICATION</h1>
