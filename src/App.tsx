@@ -638,31 +638,32 @@ const handlePrintReport = () => {
                         const forceVals = nextMappings.force ? getValues(nextMappings.force) : [];
                         const strainVals = nextMappings.strain ? getValues(nextMappings.strain) : [];
                         const stressVals = nextMappings.stress ? getValues(nextMappings.stress) : [];
-
                         const N = rows.length;
                         const mass = Number(nominalMassInput) || 0.5;
                         const g = 9.80665;
-
                         const meanDisp = dispVals.length ? dispVals.reduce((a, b) => a + Math.abs(b), 0) / N : 0.001;
                         const meanForce = forceVals.length ? forceVals.reduce((a, b) => a + Math.abs(b), 0) / N : mass * g;
                         const meanStrain = strainVals.length ? strainVals.reduce((a, b) => a + b, 0) / N : 0;
                         const meanStress = stressVals.length ? stressVals.reduce((a, b) => a + b, 0) / N : 0;
-
                         const kCalc = meanDisp > 0 ? meanForce / meanDisp : 0;
                         const wn = mass > 0 && kCalc > 0 ? Math.sqrt(kCalc / mass) : 0;
                         
-                        const sortedAmps = dispVals.map(Math.abs).sort((a, b) => b - a);
-                         const logDec =   sortedAmps.length > 5 && sortedAmps[0] > 0 && sortedAmps[4] > 0     ? Math.log(sortedAmps[0] / sortedAmps[4]) / 4     : 0; ? Math.log(sortedAmps / sortedAmps[Math.min(4, sortedAmps.length - 1)]) / 4 : 0.2558;
-                        const zeta = logDec > 0 ? logDec / Math.sqrt(Math.pow(Math.PI, 2) + Math.pow(logDec, 2)) : 0.04017;
-                        const wd = wn * Math.sqrt(1 - zeta * zeta);
-                        const cc = 2 * mass * wn * zeta;
-
-                        const trace = -2 * zeta * wn;
-                        const det = wn * wn;
-                        const discriminant = (trace * trace) - (4 * det);
-                        const eigReal = trace / 2;
-                        const eigImag = discriminant >= 0 ? 0 : Math.sqrt(Math.abs(discriminant)) / 2;
-
+const sortedAmps = dispVals.map(Math.abs).sort((a, b) => b - a);
+const logDec =
+  sortedAmps.length > 5 && sortedAmps[0] > 0 && sortedAmps[4] > 0
+    ? Math.log(sortedAmps[0] / sortedAmps[4]) / 4
+    : 0.2558;
+const zeta =
+  logDec > 0
+    ? logDec / Math.sqrt(Math.pow(Math.PI, 2) + Math.pow(logDec, 2))
+    : 0.04017;
+const wd = wn * Math.sqrt(1 - zeta * zeta);
+const cc = 2 * mass * wn * zeta;
+const trace = -2 * zeta * wn;
+const det = wn * wn;
+const discriminant = (trace * trace) - (4 * det);
+const eigReal = trace / 2;
+const eigImag = discriminant >= 0 ? 0 : Math.sqrt(Math.abs(discriminant)) / 2;
                         setMetrics({
                           computedStiffness: kCalc,
                           dampingCoefficientC: cc,
