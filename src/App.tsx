@@ -525,7 +525,6 @@ tr:nth-child(even) { background: #fafafa; }
       </main>
     </div>
   );
-}
 
 export default function App() {
   return (
