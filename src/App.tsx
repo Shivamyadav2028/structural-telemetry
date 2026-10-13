@@ -64,13 +64,6 @@ function MainDashboard() {
   
   const [licenseKeyInput, setLicenseKeyInput] = useState<string>("AM-FOUNDER-2026");
   const [isPremiumActive, setIsPremiumActive] = useState<boolean>(true);
-
-  const [metrics, setMetrics] = useState({
-    computedStiffness: 0, dampingCoefficientC: 0, naturalFrequency: 0, appliedForceVector: 0, nominalMassM: 0.75, staticDeflection: 0, potentialEnergy: 0, kineticEnergy: 0, totalMechanicalEnergy: 0, springForceMax: 0,
-    logDecrement: 0, dampingRatioZeta: 0, dampedFrequency: 0, phaseShiftPhi: 0, rmsEnergyDissipation: 0, qualityFactorQ: 0, transmissibilityRatio: 0, excitationFrequency: 0, steadyStateAmplitude: 0, dynamicAmplificationFactor: 0,
-    stateSpaceTrace: 0, matrixDeterminant: 0, eigenvalueReal: 0, eigenvalueImag: 0, lyapunovVExponent: 0, kalmanObserverGainL1: 0, kalmanObserverGainL2: 0, controllabilityGramianDet: 0, observabilityGramianDet: 0, bodePhaseMarginDeg: 0
-  });
-
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const handleLicenseKeyChange = (val: string) => {
