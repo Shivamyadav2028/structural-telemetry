@@ -802,19 +802,35 @@ const handlePrintReport = () => {
             <div className="bg-zinc-900/30 border border-dashed border-zinc-800 rounded-xl p-6 flex flex-col items-center text-center space-y-4">
               <Lock className="h-6 w-6 text-zinc-600" />
               <div>
-                <h3 className="text-sm font-bold text-zinc-200">Premium Analytics Billing Gate Locked</h3>
-                <p className="text-xs text-zinc-500 max-w-md mt-1">Standard global web traffic requires an active checkout license subscription plan tier to run multi-axis processing parameters.</p>
+                <h3 className="text-sm font-bold text-zinc-200">
+                  Premium Analytics Billing Gate Locked
+                </h3>
+                <p className="text-xs text-zinc-500 max-w-md mt-1">
+                  Standard global web traffic requires an active checkout license subscription plan tier to run multi-axis processing parameters.
+                </p>
               </div>
               <div className="flex gap-4 mt-2">
-                <a href="https://buy.stripe.com/dRm9AS51D3z8dxv6CegMw04" target="_blank" and rel="noreferrer" className="px-4 py-1.5 text-xs bg-zinc-800 border border-zinc-700 hover:bg-zinc-700 rounded text-zinc-200 font-bold transition-all">Professional ($29)</a>
-                <a href="https://buy.stripe.com/3cI9ASfGh7Podxv2lYgMw05" target="_blank" and rel="noreferrer" className="px-4 py-1.5 text-xs bg-[#00D2FF] text-zinc-950 font-bold hover:bg-[#00b2e0] rounded transition-all">Enterprise ($149)</a>
+                <a
+                  href="https://buy.stripe.com/dRm9AS51D3z8dxv6CegMw04"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-4 py-1.5 text-xs bg-zinc-800 border border-zinc-700 hover:bg-zinc-700 rounded text-zinc-200 font-bold transition-all"
+                >
+                  Professional ($29)
+                </a>
+                <a
+                  href="https://buy.stripe.com/3cI9ASfGh7Podxv2lYgMw05"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-4 py-1.5 text-xs bg-[#00D2FF] text-zinc-950 font-bold hover:bg-[#00b2e0] rounded transition-all"
+                >
+                  Enterprise ($149)
+                </a>
               </div>
-              )}
             </div>
-        </main>
-      </div>
+          )}
+        </div>
+      </main>
     </div>
   );
-};
-
-export default App;
+}
