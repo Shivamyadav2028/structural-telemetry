@@ -827,4 +827,5 @@ const handlePrintReport = () => {
                 </a>
               </div>
             </div>
+      </div>
           )}
