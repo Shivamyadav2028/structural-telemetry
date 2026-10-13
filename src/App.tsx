@@ -829,8 +829,3 @@ const handlePrintReport = () => {
               </div>
             </div>
           )}
-        </div>
-      </main>
-    </div>
-  );
-}
