@@ -27,14 +27,14 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { has
     return { hasError: true, error };
   }
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error("AeroMatrix Runtime Error:", error, errorInfo);
+    console.error("AeroMatrix AI Runtime Error:", error, errorInfo);
   }
   render() {
     if (this.state.hasError) {
       return (
         <div style={{ padding: "40px", background: "#18181b", color: "#f87171", fontFamily: "monospace", minHeight: "100vh" }}>
-          <h2 style={{ fontSize: "20px", fontWeight: "bold", marginBottom: "10px" }}>AeroMatrix AI Studio - Runtime Exception Caught</h2>
-          <p style={{ color: "#d4d4d8", fontSize: "14px", marginBottom: "20px" }}>An unexpected rendering error occurred. Check details below:</p>
+          <h2 style={{ fontSize: "20px", fontWeight: "bold", marginBottom: "10px" }}>AeroMatrix AI Studio &mdash; Differential Equation & Telemetry Suite</h2>
+          <p style={{ color: "#d4d4d8", fontSize: "14px", marginBottom: "20px" }}>An unexpected rendering exception was caught. Review details below:</p>
           <pre style={{ background: "#09090b", padding: "20px", borderRadius: "8px", border: "1px solid #27272a", overflowX: "auto" }}>
             {this.state.error && this.state.error.toString()}
           </pre>
@@ -46,16 +46,12 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { has
 }
 
 const UNIVERSAL_DISCIPLINES = [
-  // --- ENGINEERING & AEROSPACE ---
-  "Mechanical & Aerospace Engineering", "Civil & Structural Engineering",
-  "Satellite & Orbital Mechanics", "Geological & Seismological Engineering",
-  "Chemical & Petroleum Engineering", "Electrical & Computer Systems",
-  "Industrial & Manufacturing", "Biomedical & Biomechanics",
-  // --- SCIENCES & MATH ---
-  "Applied Physics & Quantum Dynamics", "Theoretical Mathematics",
-  "Astrophysics & Planetary Science", "Earth & Environmental Sciences",
-  // --- COMMERCE & HUMANITIES ---
-  "Financial Engineering & Econometrics", "Law & Forensic Analytics"
+  "Differential Equations & Matrix Solver", "Mechanical & Aerospace Engineering",
+  "Civil & Structural Dynamics", "Satellite Orbital Mechanics",
+  "Geological & Seismological Engineering", "Chemical & Petroleum Processing",
+  "Electrical & Control Systems", "Biomedical & Biomechanics",
+  "Applied Physics & Quantum Dynamics", "Astrophysics & Planetary Science",
+  "Financial Engineering & Econometrics", "Forensic Analytics & Law"
 ];
 
 const GLOBAL_LANGUAGES = [
@@ -73,18 +69,18 @@ const GLOBAL_LANGUAGES = [
 
 const TRANSLATIONS: Record<string, Record<string, string>> = {
   en: {
-    subtitle: "Universal Institutional Telemetry, Simulation & Computational Suite",
+    subtitle: "Online Differential Equation Solver, Matrix Calculator & Telemetry Suite",
     labSetup: "Laboratory & Researcher Setup",
     institute: "University / Institute",
     department: "Department Branch",
     room: "Lab Room / Facility",
-    mass: "Nominal Mass / Orbital Factor",
+    mass: "Nominal Mass / Factor",
     investigator: "Lead Investigator",
     idNum: "ID / Research Grant",
-    ingestion: "Data Ingestion Stream",
-    dropText: "Drop Excel (.xlsx) or CSV Telemetry Files",
-    analyzer: "Advanced Multi-Mode Simulation & Telemetry Analyzer",
-    gridTitle: "Multi-Tier Academic Assessment & Custom Metrics",
+    ingestion: "CSV / Excel Data Ingestion Stream",
+    dropText: "Drop Excel (.xlsx) or CSV Telemetry Data",
+    analyzer: "Differential Equation & Multi-Mode Waveform Analyzer",
+    gridTitle: "Multi-Tier Academic Assessment & Custom Parameter Grid",
     undergrad: "1. Undergraduate Tier",
     masters: "2. Master's Core",
     phd: "3. Ph.D. Stability & State-Space",
@@ -95,18 +91,18 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     entBtn: "Enterprise ($149/mo)"
   },
   ne: {
-    subtitle: "सार्वभौमिक संस्थागत टेलिफ्री, सिमुलेशन र कम्प्युटेसनल सुइट",
+    subtitle: "अनलाइन भिन्न समीकरणSolver, म्याट्रिक्स क्याल्कुलेटर र टेलिफ्री सुइट",
     labSetup: "प्रयोगशाला र अनुसन्धानकर्ता सेटअप",
     institute: "विश्वविद्यालय / संस्था",
     department: "विभाग शाखा",
     room: "ल्याब कोठा",
-    mass: "नाममात्र मास / अर्बिटल फ्याक्टर",
+    mass: "नाममात्र मास / फ्याक्टर",
     investigator: "प्रमुख अनुसन्धानकर्ता",
     idNum: "आईडी / ग्रान्ट नम्बर",
     ingestion: "डाटा इन्जेसन स्ट्रिम",
-    dropText: "एक्सेल (.xlsx) वा CSV फाइलहरू ड्रप गर्नुहोस्",
-    analyzer: "उन्नत मल्टि-मोड सिमुलेशन र टेलिफ्री विश्लेषक",
-    gridTitle: "बहु-स्तरीय शैक्षिक मूल्यांकन र अनुकूलित मेट्रिक्स",
+    dropText: "एक्सेल (.xlsx) वा CSV टेलिफ्री फाइलहरू ड्रप गर्नुहोस्",
+    analyzer: "भिन्न समीकरण र मल्टि-मोड विश्लेषक",
+    gridTitle: "बहु-स्तरीय शैक्षिक मूल्यांकन र मेट्रिक्स ग्रिड",
     undergrad: "१. स्नातक तह",
     masters: "२. स्नातकोत्तर कोर",
     phd: "३. पीएचडी स्थिरता र राज्य-स्पेस",
@@ -117,18 +113,18 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     entBtn: "इन्टरप्राइज ($१४९/महिना)"
   },
   es: {
-    subtitle: "Suite Universal de Telemetría, Simulación y Computación Académica",
+    subtitle: "Solver de Ecuaciones Diferenciales, Calculadora de Matrices y Telemetría",
     labSetup: "Configuración de Laboratorio",
     institute: "Universidad / Instituto",
     department: "Departamento",
     room: "Sala de Lab",
-    mass: "Masa Nominal / Orbital",
+    mass: "Masa Nominal / Factor",
     investigator: "Investigador Principal",
     idNum: "ID / Beca de Investigación",
     ingestion: "Flujo de Ingesta de Datos",
     dropText: "Suelte archivos Excel (.xlsx) o CSV",
-    analyzer: "Analizador Avanzado de Simulación y Telemetría",
-    gridTitle: "Cuadrícula de Evaluación Académica y Métricas",
+    analyzer: "Analizador de Ecuaciones Diferenciales y Ondas",
+    gridTitle: "Cuadrícula de Evaluación Académica",
     undergrad: "1. Nivel Grado",
     masters: "2. Núcleo Maestría",
     phd: "3. Estabilidad Ph.D. y Espacio de Estados",
@@ -145,7 +141,7 @@ function MainDashboard() {
   const [, setUploadStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [rows, setRows] = useState<DataRow[]>([]);
   const [activeTier, setActiveTier] = useState<AcademicTier>("undergraduate");
-  const [selectedDiscipline, setSelectedDiscipline] = useState<string>("Mechanical & Aerospace Engineering");
+  const [selectedDiscipline, setSelectedDiscipline] = useState<string>("Differential Equations & Matrix Solver");
   const [graphMode, setGraphMode] = useState<GraphMode>("waveform");
   const [currentLang, setCurrentLang] = useState<string>("en");
   const [availableHeaders, setAvailableHeaders] = useState<string[]>([]);
@@ -153,7 +149,6 @@ function MainDashboard() {
   const [, setSelectedYAxis] = useState<string>("");
   const [, setMappings] = useState({ time: "", displacement: "", force: "", acceleration: "", strain: "", stress: "" });
   
-  // Custom Parameter Selection State (Check / Uncheck options)
   const [selectedMetricsConfig, setSelectedMetricsConfig] = useState<Record<string, boolean>>({
     stiffness: true,
     damping: true,
@@ -173,7 +168,7 @@ function MainDashboard() {
   };
   
   const [universityName, setUniversityName] = useState<string>("UNIVERSAL RESEARCH INSTITUTE");
-  const [departmentName, setDepartmentName] = useState<string>("Faculty of Aerospace, Satellite & Computational Dynamics");
+  const [departmentName, setDepartmentName] = useState<string>("Faculty of Applied Mathematics & Computational Dynamics");
   const [labAddress, setLabAddress] = useState<string>("Global Telemetry Laboratory, Room 501");
   const [investigatorName, setInvestigatorName] = useState<string>("Shivam Kumar Yadav");
   const [investigatorId, setInvestigatorId] = useState<string>("ID-AM-2026-GLOBAL");
@@ -314,7 +309,6 @@ function MainDashboard() {
       }
       ctx.stroke();
     } else if (graphMode === "orbital") {
-      // Satellite & Geological Vector Mapping Mode
       ctx.strokeStyle = "#10B981";
       ctx.lineWidth = 2.5;
       ctx.beginPath();
@@ -419,15 +413,15 @@ tr:nth-child(even) { background: #fafafa; }
     </tr>
   </thead>
   <tbody>
-    ${selectedMetricsConfig.stiffness ? `<tr><td>System Stiffness / Primary Metric</td><td>k</td><td><strong>${metrics.computedStiffness.toFixed(4)}</strong> Units</td></tr>` : ''}
-    ${selectedMetricsConfig.damping ? `<tr><td>Viscous Damping Coefficient</td><td>c</td><td><strong>${metrics.dampingCoefficientC.toFixed(4)}</strong> N-s/m</td></tr>` : ''}
-    ${selectedMetricsConfig.frequency ? `<tr><td>Natural Angular Frequency</td><td>&omega;<sub>n</sub></td><td><strong>${metrics.naturalFrequency.toFixed(4)}</strong> rad/s</td></tr>` : ''}
-    ${selectedMetricsConfig.stateTrace ? `<tr><td>State-Space Matrix Trace</td><td>tr(A)</td><td><strong>${metrics.stateSpaceTrace.toFixed(4)}</strong> 1/s</td></tr>` : ''}
-    ${selectedMetricsConfig.orbitalVelocity ? `<tr><td>Orbital / Satellite Velocity</td><td>v<sub>orb</sub></td><td><strong>${metrics.orbitalVelocity.toFixed(3)}</strong> km/s</td></tr>` : ''}
-    ${selectedMetricsConfig.seismicStress ? `<tr><td>Geological / Seismic Stress</td><td>&sigma;<sub>s</sub></td><td><strong>${metrics.seismicStress.toFixed(2)}</strong> MPa</td></tr>` : ''}
+    ${selectedMetricsConfig.stiffness ? `<tr><td>System Stiffness / Primary Metric</td><td>k</td><td><strong>${metrics?.computedStiffness?.toFixed(4) ?? "0.0000"}</strong> Units</td></tr>` : ''}
+    ${selectedMetricsConfig.damping ? `<tr><td>Viscous Damping Coefficient</td><td>c</td><td><strong>${metrics?.dampingCoefficientC?.toFixed(4) ?? "0.0000"}</strong> N-s/m</td></tr>` : ''}
+    ${selectedMetricsConfig.frequency ? `<tr><td>Natural Angular Frequency</td><td>&omega;<sub>n</sub></td><td><strong>${metrics?.naturalFrequency?.toFixed(4) ?? "0.0000"}</strong> rad/s</td></tr>` : ''}
+    ${selectedMetricsConfig.stateTrace ? `<tr><td>State-Space Matrix Trace</td><td>tr(A)</td><td><strong>${metrics?.stateSpaceTrace?.toFixed(4) ?? "0.0000"}</strong> 1/s</td></tr>` : ''}
+    ${selectedMetricsConfig.orbitalVelocity ? `<tr><td>Orbital / Satellite Velocity</td><td>v<sub>orb</sub></td><td><strong>${metrics?.orbitalVelocity?.toFixed(3) ?? "0.000"}</strong> km/s</td></tr>` : ''}
+    ${selectedMetricsConfig.seismicStress ? `<tr><td>Geological / Seismic Stress</td><td>&sigma;<sub>s</sub></td><td><strong>${metrics?.seismicStress?.toFixed(2) ?? "0.00"}</strong> MPa</td></tr>` : ''}
   </tbody>
 </table>
-<div class="footer">AeroMatrix AI Studio &bull; Universal Multi-Disciplinary Telemetry & Simulation Suite</div>
+<div class="footer">AeroMatrix AI Studio &bull; Differential Equation Solver & Universal Telemetry Suite</div>
 <script>window.print();</script>
 </body>
 </html>
@@ -437,8 +431,7 @@ tr:nth-child(even) { background: #fafafa; }
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans selection:bg-[#00D2FF] selection:text-zinc-950">
-      {/* HEADER WITH CORRECTED PADDING & Z-INDEX */}
-      <header className="border-b border-zinc-900 bg-zinc-950/95 backdrop-blur-md sticky top-0 z-50 px-6 py-3.5 flex flex-wrap items-center justify-between gap-4">
+      <header className="border-b border-zinc-900 bg-zinc-950/95 backdrop-blur-md sticky top-0 z-50 px-6 py-3.5 flex flex-wrap items-center justify-between gap-4 shadow-xl">
         <div className="flex items-center space-x-3">
           <div className="bg-[#00D2FF]/10 border border-[#00D2FF]/30 p-2 rounded-lg">
             <Cpu className="h-5 w-5 text-[#00D2FF]" />
@@ -446,13 +439,12 @@ tr:nth-child(even) { background: #fafafa; }
           <div>
             <div className="flex items-center gap-2">
               <span className="text-sm font-bold font-mono tracking-wider text-white">AEROMATRIX AI STUDIO</span>
-              <span className="text-[10px] bg-[#00D2FF] text-zinc-950 font-extrabold px-1.5 py-0.5 rounded">v7.0 GLOBAL</span>
+              <span className="text-[10px] bg-[#00D2FF] text-zinc-950 font-extrabold px-1.5 py-0.5 rounded">v7.2</span>
             </div>
             <p className="text-[10px] text-zinc-400 font-mono">{t("subtitle")}</p>
           </div>
         </div>
 
-        {/* SELECTORS FOR LANGUAGE & UNIVERSAL FACULTY */}
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center space-x-2 bg-zinc-900 border border-zinc-800 px-3 py-1.5 rounded-lg font-mono text-xs shadow-md">
             <Languages className="h-4 w-4 text-[#00D2FF]" />
@@ -513,7 +505,6 @@ tr:nth-child(even) { background: #fafafa; }
         </div>
       </header>
 
-      {/* MAIN CONTAINER WITH PROPER TOP PADDING TO PREVENT OVERLAP */}
       <main className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-6 p-6 pt-6 max-w-[1700px] w-full mx-auto">
         <div className="space-y-6 lg:col-span-1">
           <div className="bg-zinc-900/40 border border-zinc-900 rounded-2xl p-5 space-y-4 backdrop-blur-sm">
@@ -552,7 +543,6 @@ tr:nth-child(even) { background: #fafafa; }
             </div>
           </div>
 
-          {/* PARAMETER CUSTOMIZATION CHECKBOX PANEL */}
           <div className="bg-zinc-900/40 border border-zinc-900 rounded-2xl p-5 space-y-3 backdrop-blur-sm font-mono text-xs">
             <h2 className="text-xs font-bold tracking-widest text-zinc-400 uppercase flex items-center gap-2 border-b border-zinc-800/80 pb-3">
               <Layers className="h-4 w-4 text-[#00D2FF]" /> Custom Parameter Filter (Check/Uncheck)
@@ -607,7 +597,6 @@ tr:nth-child(even) { background: #fafafa; }
                 <Activity className="h-4 w-4 text-[#00D2FF]" /> {t("analyzer")} ({selectedDiscipline})
               </h2>
 
-              {/* GRAPH PLOTTING MODES (Waveform, Phase Space, Spectrum, Orbital/Geological) */}
               <div className="flex items-center space-x-1 bg-zinc-950 p-1 rounded-lg border border-zinc-800 font-mono text-[11px]">
                 <button onClick={() => setGraphMode("waveform")} className={`px-2.5 py-1 rounded transition-all ${graphMode === "waveform" ? "bg-[#00D2FF] text-zinc-950 font-bold" : "text-zinc-400 hover:text-white"}`}>2D Waveform</button>
                 <button onClick={() => setGraphMode("phase")} className={`px-2.5 py-1 rounded transition-all ${graphMode === "phase" ? "bg-purple-500 text-white font-bold" : "text-zinc-400 hover:text-white"}`}>Phase Trajectory</button>
@@ -636,42 +625,39 @@ tr:nth-child(even) { background: #fafafa; }
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-[11px]">
-              {/* Undergraduate Tier */}
               <div className={`p-4 rounded-xl border transition-all ${activeTier === 'undergraduate' ? 'bg-zinc-900/80 border-[#00D2FF]/60 shadow-xl' : 'opacity-35'}`}>
                 <div className="flex items-center space-x-2 text-[#00D2FF] mb-3 border-b border-zinc-800 pb-2">
                   <GraduationCap className="h-4 w-4" />
                   <span className="text-[10px] font-bold uppercase">{t("undergrad")}</span>
                 </div>
                 <div className="space-y-2 text-zinc-300">
-                  {selectedMetricsConfig.stiffness && <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Stiffness (k):</span><span className="text-white font-bold">{metrics.computedStiffness.toFixed(2)} Units</span></div>}
-                  {selectedMetricsConfig.damping && <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Damping (c):</span><span className="text-white font-bold">{metrics.dampingCoefficientC.toFixed(2)} Units</span></div>}
-                  {selectedMetricsConfig.frequency && <div className="flex justify-between pb-1"><span>Nat. Freq (&omega;n):</span><span className="text-white font-bold">{metrics.naturalFrequency.toFixed(2)} rad/s</span></div>}
+                  {selectedMetricsConfig.stiffness && <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Stiffness (k):</span><span className="text-white font-bold">{metrics?.computedStiffness?.toFixed(2) ?? "0.00"} Units</span></div>}
+                  {selectedMetricsConfig.damping && <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Damping (c):</span><span className="text-white font-bold">{metrics?.dampingCoefficientC?.toFixed(2) ?? "0.00"} Units</span></div>}
+                  {selectedMetricsConfig.frequency && <div className="flex justify-between pb-1"><span>Nat. Freq (&omega;n):</span><span className="text-white font-bold">{metrics?.naturalFrequency?.toFixed(2) ?? "0.00"} rad/s</span></div>}
                 </div>
               </div>
 
-              {/* Master's Tier */}
               <div className={`p-4 rounded-xl border transition-all ${activeTier === 'masters' ? 'bg-zinc-900/80 border-[#FFE600]/60 shadow-xl' : 'opacity-35'}`}>
                 <div className="flex items-center space-x-2 text-[#FFE600] mb-3 border-b border-zinc-800 pb-2">
                   <Waves className="h-4 w-4" />
                   <span className="text-[10px] font-bold uppercase">{t("masters")}</span>
                 </div>
                 <div className="space-y-2 text-zinc-300">
-                  <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Log Dec (&delta;):</span><span className="text-white font-bold">{metrics.logDecrement.toFixed(4)}</span></div>
-                  <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Damping Ratio (&zeta;):</span><span className="text-white font-bold">{metrics.dampingRatioZeta.toFixed(5)}</span></div>
-                  <div className="flex justify-between pb-1"><span>Damped Freq (&omega;d):</span><span className="text-white font-bold">{metrics.dampedFrequency.toFixed(2)} rad/s</span></div>
+                  <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Log Dec (&delta;):</span><span className="text-white font-bold">{metrics?.logDecrement?.toFixed(4) ?? "0.0000"}</span></div>
+                  <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Damping Ratio (&zeta;):</span><span className="text-white font-bold">{metrics?.dampingRatioZeta?.toFixed(5) ?? "0.00000"}</span></div>
+                  <div className="flex justify-between pb-1"><span>Damped Freq (&omega;d):</span><span className="text-white font-bold">{metrics?.dampedFrequency?.toFixed(2) ?? "0.00"} rad/s</span></div>
                 </div>
               </div>
 
-              {/* Ph.D. Tier & Satellite/Geological Extensions */}
               <div className={`p-4 rounded-xl border transition-all ${activeTier === 'phd' ? 'bg-zinc-900/80 border-[#A855F7]/60 shadow-xl' : 'opacity-35'}`}>
                 <div className="flex items-center space-x-2 text-[#A855F7] mb-3 border-b border-zinc-800 pb-2">
                   <Binary className="h-4 w-4" />
                   <span className="text-[10px] font-bold uppercase">{t("phd")}</span>
                 </div>
                 <div className="space-y-2 text-zinc-300">
-                  {selectedMetricsConfig.stateTrace && <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Matrix Trace [tr(A)]:</span><span className="text-white font-bold">{metrics.stateSpaceTrace.toFixed(4)}</span></div>}
-                  {selectedMetricsConfig.orbitalVelocity && <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Orbital Vel (v):</span><span className="text-emerald-400 font-bold">{metrics.orbitalVelocity.toFixed(3)} km/s</span></div>}
-                  {selectedMetricsConfig.seismicStress && <div className="flex justify-between pb-1"><span>Seismic Stress:</span><span className="text-amber-400 font-bold">{metrics.seismicStress.toFixed(1)} MPa</span></div>}
+                  {selectedMetricsConfig.stateTrace && <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Matrix Trace [tr(A)]:</span><span className="text-white font-bold">{metrics?.stateSpaceTrace?.toFixed(4) ?? "0.0000"}</span></div>}
+                  {selectedMetricsConfig.orbitalVelocity && <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Orbital Vel (v):</span><span className="text-emerald-400 font-bold">{metrics?.orbitalVelocity?.toFixed(3) ?? "0.000"} km/s</span></div>}
+                  {selectedMetricsConfig.seismicStress && <div className="flex justify-between pb-1"><span>Seismic Stress:</span><span className="text-amber-400 font-bold">{metrics?.seismicStress?.toFixed(1) ?? "0.0"} MPa</span></div>}
                 </div>
               </div>
             </div>
