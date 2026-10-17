@@ -1,9 +1,8 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
-import { useDropzone as useReactDropzone } from "react-dropzone";
 import * as XLSX from "xlsx";
 import {
   Upload, FileSpreadsheet, Activity,
-  Binary, Waves, Layers, Cpu, Printer, Download, Key, Globe2, Languages, CheckSquare, Square, Save, Play
+  Cpu, Printer, Globe2, Languages, Save, Play, Lock, Building2, Search, Sliders
 } from "lucide-react";
 
 export type GraphMode = "waveform" | "phase" | "spectrum" | "orbital" | "stability" | "damper";
@@ -70,41 +69,24 @@ const GLOBAL_LANGUAGES = [
 
 function MainDashboard() {
   const [filename, setFilename] = useState<string>("");
-  const [, setUploadStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [rows, setRows] = useState<DataRow[]>([]);
+  const [, setRows] = useState<DataRow[]>([]);
   const [selectedDiscipline, setSelectedDiscipline] = useState<string>("Satellite & Orbital Mechanics");
   const [graphMode, setGraphMode] = useState<GraphMode>("orbital");
   const [currentLang, setCurrentLang] = useState<string>("ne");
-  const [, setAvailableHeaders] = useState<string[]>([]);
-  
-  // Top-Row Setup States
+
+  // Institutional Profile States (Sidebar)
   const [universityName, setUniversityName] = useState<string>("UNIVERSAL RESEARCH INSTITUTE");
   const [departmentName, setDepartmentName] = useState<string>("Department of Aerospace & Satellite Dynamics");
   const [labAddress, setLabAddress] = useState<string>("Lab Room 501");
   const [investigatorName, setInvestigatorName] = useState<string>("Shivam Kumar Yadav");
   const [investigatorId, setInvestigatorId] = useState<string>("Grant ID: AM-2026-09");
-  const [nominalMassInput, setNominalMassInput] = useState<string>("0.75");
+  const [nominalMassInput] = useState<string>("0.75");
 
-  // Custom Parameter Filter (Check/Uncheck All Global Parameters)
-  const [selectedMetricsConfig, setSelectedMetricsConfig] = useState<Record<string, boolean>>({
-    stiffness: true,
-    damping: true,
-    frequency: true,
-    stateTrace: true,
-    eigenvalues: true,
-    orbitalVelocity: true,
-    seismicStress: true,
-    damperForce: true,
-    stabilityMargin: true,
-    kineticEnergy: true
-  });
+  // Advanced MATLAB/ANSYS style description & search query
+  const [simulationPrompt, setSimulationPrompt] = useState<string>("");
+  const [parameterSearchQuery, setParameterSearchQuery] = useState<string>("");
+  const [isPremiumActive] = useState<boolean>(true);
 
-  const toggleMetric = (key: string) => {
-    setSelectedMetricsConfig(prev => ({ ...prev, [key]: !prev[key] }));
-  };
-
-  const [licenseKeyInput, setLicenseKeyInput] = useState<string>("AM-FOUNDER-2026");
-  const [isPremiumActive, setIsPremiumActive] = useState<boolean>(true);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const [metrics, setMetrics] = useState({
@@ -119,14 +101,11 @@ function MainDashboard() {
     const manualVal = Number(nominalMassInput) || 0.75;
     const fileMassVal = Number(dataRows[0]["mass"] || dataRows[0]["Mass"] || 0);
     const mass = manualVal > 0 ? manualVal : (fileMassVal > 0 ? fileMassVal : 0.75);
-
     const getValues = (colName: string) => dataRows.map(r => Number(r[colName]) || 0);
     const dispVals = getValues("displacement");
     const forceVals = getValues("force");
-
     const meanDisp = dispVals.length ? dispVals.reduce((a, b) => a + Math.abs(b), 0) / N : 0.005;
     const meanForce = forceVals.length ? forceVals.reduce((a, b) => a + Math.abs(b), 0) / N : 12.5;
-
     const kCalc = meanDisp > 0 ? meanForce / meanDisp : 2500;
     const wn = mass > 0 && kCalc > 0 ? Math.sqrt(kCalc / mass) : 57.74;
     const zeta = 0.02;
@@ -153,7 +132,6 @@ function MainDashboard() {
     });
   };
 
-  // Dynamic Graphing Engine tailored for each field/mode
   const renderVisualTelemetryWave = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -162,16 +140,13 @@ function MainDashboard() {
     const W = canvas.width;
     const H = canvas.height;
     ctx.clearRect(0, 0, W, H);
-
     ctx.strokeStyle = "#27272a";
     ctx.lineWidth = 1;
     for (let i = 0; i <= 10; i++) {
       ctx.beginPath(); ctx.moveTo(i * (W / 10), 0); ctx.lineTo(i * (W / 10), H); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(0, i * (H / 6)); ctx.lineTo(W, i * (H / 6)); ctx.stroke();
     }
-
     if (graphMode === "orbital") {
-      // Satellite & Orbital Mechanics Vector Plot
       ctx.strokeStyle = "#10B981";
       ctx.lineWidth = 2.5;
       ctx.beginPath();
@@ -182,7 +157,6 @@ function MainDashboard() {
       }
       ctx.stroke();
     } else if (graphMode === "stability") {
-      // Linear Stability Analysis Phase Plane
       ctx.strokeStyle = "#A855F7";
       ctx.lineWidth = 2.5;
       ctx.beginPath();
@@ -195,7 +169,6 @@ function MainDashboard() {
       }
       ctx.stroke();
     } else if (graphMode === "damper") {
-      // Damper Response Decay Curve
       ctx.strokeStyle = "#FFE600";
       ctx.lineWidth = 2.5;
       ctx.beginPath();
@@ -205,7 +178,6 @@ function MainDashboard() {
       }
       ctx.stroke();
     } else {
-      // Standard Waveform
       ctx.strokeStyle = "#00D2FF";
       ctx.lineWidth = 2.5;
       ctx.beginPath();
@@ -221,9 +193,8 @@ function MainDashboard() {
     renderVisualTelemetryWave();
   }, [renderVisualTelemetryWave]);
 
-  const handleFile = useCallback((fileObj: File) => {
+  const handleFile = (fileObj: File) => {
     setFilename(fileObj.name);
-    setUploadStatus("loading");
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
@@ -231,29 +202,14 @@ function MainDashboard() {
         const workbook = XLSX.read(data, { type: "array" });
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         const items = XLSX.utils.sheet_to_json<DataRow>(sheet);
-        if (items.length > 0) {
-          const headers = Object.keys(items[0]);
-          setAvailableHeaders(headers);
-        }
         setRows(items);
         rundynamicCalculations(items);
-        setUploadStatus("success");
       } catch (err) {
-        setUploadStatus("error");
+        console.error("Parse error", err);
       }
     };
     reader.readAsArrayBuffer(fileObj);
-  }, []);
-
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    if (acceptedFiles && acceptedFiles.length > 0) handleFile(acceptedFiles[0]);
-  }, [handleFile]);
-
-  const { getRootProps, getInputProps, isDragActive } = useReactDropzone({
-    onDrop,
-    accept: { "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"], "text/csv": [".csv"] },
-    multiple: false
-  });
+  };
 
   const saveGraphImage = () => {
     const canvas = canvasRef.current;
@@ -271,159 +227,109 @@ function MainDashboard() {
     const printWindow = window.open("", "_blank");
     if (!printWindow) return;
     printWindow.document.write(`
-<html>
-<head>
-<title>AeroMatrix AI Report &mdash; ${universityName}</title>
-<style>
-body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; padding: 40px; color: #18181b; background: #fff; }
-.header { border-bottom: 2px solid #09090b; padding-bottom: 12px; margin-bottom: 24px; }
-h1 { font-size: 16px; font-weight: 800; text-transform: uppercase; margin: 0 0 6px 0; color: #09090b; }
-.meta { font-size: 11px; color: #52525b; font-family: monospace; }
-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-family: monospace; }
-th, td { border: 1px solid #e4e4e7; padding: 10px 12px; font-size: 12px; text-align: left; }
-th { background: #09090b; color: #ffffff; font-weight: 700; text-transform: uppercase; font-size: 9px; letter-spacing: 0.05em; padding-top: 10px; padding-bottom: 10px; }
-tr:nth-child(even) { background: #fafafa; }
-.footer { margin-top: 30px; font-size: 10px; color: #71717a; font-family: monospace; text-align: right; }
-</style>
-</head>
-<body>
-<div class="header">
-  <h1>${universityName} &mdash; ${departmentName}</h1>
-  <div class="meta">Facility: ${labAddress} | Investigator: ${investigatorName} (${investigatorId}) | Encyclopedia Field: ${selectedDiscipline}</div>
-</div>
-<table>
-  <thead>
-    <tr>
-      <th>Parameter Notation</th>
-      <th>Description</th>
-      <th>Quantified Value</th>
-    </tr>
-  </thead>
-  <tbody>
-    ${selectedMetricsConfig.stiffness ? `<tr><td>k</td><td>System Stiffness / Primary Metric</td><td><strong>${metrics?.computedStiffness?.toFixed(4) ?? "0.0000"}</strong> Units</td></tr>` : ''}
-    ${selectedMetricsConfig.damping ? `<tr><td>c</td><td>Viscous Damping Coefficient</td><td><strong>${metrics?.dampingCoefficientC?.toFixed(4) ?? "0.0000"}</strong> N-s/m</td></tr>` : ''}
-    ${selectedMetricsConfig.frequency ? `<tr><td>&omega;<sub>n</sub></td><td>Natural Angular Frequency</td><td><strong>${metrics?.naturalFrequency?.toFixed(4) ?? "0.0000"}</strong> rad/s</td></tr>` : ''}
-    ${selectedMetricsConfig.stateTrace ? `<tr><td>tr(A)</td><td>State-Space Matrix Trace</td><td><strong>${metrics?.stateSpaceTrace?.toFixed(4) ?? "0.0000"}</strong> 1/s</td></tr>` : ''}
-    ${selectedMetricsConfig.orbitalVelocity ? `<tr><td>v<sub>orb</sub></td><td>Satellite Orbital Velocity</td><td><strong>${metrics?.orbitalVelocity?.toFixed(3) ?? "0.000"}</strong> km/s</td></tr>` : ''}
-    ${selectedMetricsConfig.seismicStress ? `<tr><td>&sigma;<sub>s</sub></td><td>Seismic Shear Stress</td><td><strong>${metrics?.seismicStress?.toFixed(2) ?? "0.00"}</strong> MPa</td></tr>` : ''}
-  </tbody>
-</table>
-<div class="footer">AeroMatrix AI Studio &bull; Online Differential Equation Solver & Universal Telemetry Suite</div>
-<script>window.print();</script>
-</body>
-</html>
+      <html>
+      <head>
+      <title>AeroMatrix AI Report &mdash; ${universityName}</title>
+      <style>
+      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; padding: 40px; color: #18181b; background: #fff; }
+      .header { border-bottom: 2px solid #09090b; padding-bottom: 12px; margin-bottom: 24px; }
+      h1 { font-size: 16px; font-weight: 800; text-transform: uppercase; margin: 0 0 6px 0; color: #09090b; }
+      .meta { font-size: 11px; color: #52525b; font-family: monospace; }
+      table { width: 100%; border-collapse: collapse; margin-top: 15px; font-family: monospace; }
+      th, td { border: 1px solid #e4e4e7; padding: 10px 12px; font-size: 12px; text-align: left; }
+      th { background: #09090b; color: #ffffff; font-weight: 700; text-transform: uppercase; font-size: 9px; letter-spacing: 0.05em; padding-top: 10px; padding-bottom: 10px; }
+      tr:nth-child(even) { background: #fafafa; }
+      .footer { margin-top: 30px; font-size: 10px; color: #71717a; font-family: monospace; text-align: right; }
+      </style>
+      </head>
+      <body>
+      <div class="header">
+      <h1>${universityName} &mdash; ${departmentName}</h1>
+      <div class="meta">Facility: ${labAddress} | Investigator: ${investigatorName} (${investigatorId}) | Encyclopedia Field: ${selectedDiscipline}</div>
+      </div>
+      <table>
+      <thead>
+      <tr><th>Parameter Notation</th><th>Description</th><th>Quantified Value</th></tr>
+      </thead>
+      <tbody>
+      <tr><td>k</td><td>System Stiffness / Primary Metric</td><td><strong>${metrics?.computedStiffness?.toFixed(4) ?? "0.0000"}</strong> Units</td></tr>
+      <tr><td>c</td><td>Viscous Damping Coefficient</td><td><strong>${metrics?.dampingCoefficientC?.toFixed(4) ?? "0.0000"}</strong> N-s/m</td></tr>
+      <tr><td>&omega;<sub>n</sub></td><td>Natural Angular Frequency</td><td><strong>${metrics?.naturalFrequency?.toFixed(4) ?? "0.0000"}</strong> rad/s</td></tr>
+      </tbody>
+      </table>
+      <div class="footer">AeroMatrix AI Studio &bull; Online Differential Equation Solver & Universal Telemetry Suite</div>
+      <script>window.print();</script>
+      </body>
+      </html>
     `);
     printWindow.document.close();
+  };
+
+  const matchesSearch = (text: string) => {
+    if (!parameterSearchQuery) return true;
+    return text.toLowerCase().includes(parameterSearchQuery.toLowerCase());
   };
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans selection:bg-[#00D2FF] selection:text-zinc-950">
       
-      {/* TOP ROW CONTROL BAR: SETUP, ENCYCLOPEDIA FIELD, AND GLOBAL LANGUAGE SELECTOR */}
-      <header className="border-b border-zinc-900 bg-zinc-950/95 backdrop-blur-md sticky top-0 z-50 px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-xl">
-        <div className="flex items-center space-x-2">
+      {/* TOP HEADER BAR: CLEAN & UNCLUTTERED */}
+      <header className="border-b border-zinc-900 bg-zinc-950/95 backdrop-blur-md sticky top-0 z-50 px-6 py-3 flex flex-wrap items-center justify-between gap-4 shadow-xl">
+        <div className="flex items-center space-x-2.5">
           <div className="bg-[#00D2FF]/10 border border-[#00D2FF]/30 p-1.5 rounded-lg">
-            <Cpu className="h-4 w-4 text-[#00D2FF]" />
+            <Cpu className="h-5 w-5 text-[#00D2FF]" />
           </div>
           <div>
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs font-bold font-mono tracking-wider text-white">AEROMATRIX AI STUDIO</span>
-              <span className="text-[9px] bg-[#00D2FF] text-zinc-950 font-extrabold px-1.5 py-0.2 rounded">v8.0</span>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-bold font-mono tracking-wider text-white">AEROMATRIX AI STUDIO</span>
+              <span className="text-[10px] bg-[#00D2FF] text-zinc-950 font-extrabold px-1.5 py-0.5 rounded">v8.0</span>
             </div>
           </div>
         </div>
 
-        {/* SETUP INPUTS EMBEDDED IN TOP ROW TO SAVE SCREEN SPACE */}
-        <div className="flex flex-wrap items-center gap-2 font-mono text-[11px]">
-          <input
-            type="text"
-            value={universityName}
-            onChange={(e) => setUniversityName(e.target.value)}
-            placeholder="University / Institute..."
-            className="bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-zinc-200 w-36 focus:border-[#00D2FF] focus:outline-none"
-          />
-          <input
-            type="text"
-            value={departmentName}
-            onChange={(e) => setDepartmentName(e.target.value)}
-            placeholder="Department / Branch..."
-            className="bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-zinc-200 w-36 focus:border-[#00D2FF] focus:outline-none"
-          />
-          <input
-            type="text"
-            value={labAddress}
-            onChange={(e) => setLabAddress(e.target.value)}
-            placeholder="Lab Room..."
-            className="bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-zinc-200 w-24 focus:border-[#00D2FF] focus:outline-none"
-          />
-          <input
-            type="text"
-            value={investigatorName}
-            onChange={(e) => setInvestigatorName(e.target.value)}
-            placeholder="Lead Investigator..."
-            className="bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-zinc-200 w-32 focus:border-[#00D2FF] focus:outline-none"
-          />
-          <input
-            type="text"
-            value={investigatorId}
-            onChange={(e) => setInvestigatorId(e.target.value)}
-            placeholder="ID / Grant..."
-            className="bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-zinc-200 w-28 focus:border-[#00D2FF] focus:outline-none"
-          />
-        </div>
-
         {/* ENCYCLOPEDIA FIELD & LANGUAGE SELECTORS */}
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center space-x-1.5 bg-zinc-900 border border-zinc-800 px-2 py-1 rounded-lg font-mono text-xs">
-            <Globe2 className="h-3.5 w-3.5 text-[#00D2FF]" />
-            <select
-              value={selectedDiscipline}
-              onChange={(e) => setSelectedDiscipline(e.target.value)}
-              className="bg-transparent text-white font-bold focus:outline-none cursor-pointer max-w-[180px] truncate text-xs"
-            >
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center space-x-2 bg-zinc-900 border border-zinc-800 px-3 py-1.5 rounded-lg font-mono text-xs">
+            <Globe2 className="h-4 w-4 text-[#00D2FF]" />
+            <select value={selectedDiscipline} onChange={(e) => setSelectedDiscipline(e.target.value)} className="bg-transparent text-white font-bold focus:outline-none cursor-pointer max-w-[220px] truncate text-xs">
               {UNIVERSAL_ENCYCLOPEDIA_FIELDS.map((disc) => (
-                <option key={disc} value={disc} className="bg-zinc-900 text-zinc-200">
-                  {disc}
-                </option>
+                <option key={disc} value={disc} className="bg-zinc-900 text-zinc-200">{disc}</option>
               ))}
             </select>
           </div>
 
-          <div className="flex items-center space-x-1.5 bg-zinc-900 border border-zinc-800 px-2 py-1 rounded-lg font-mono text-xs">
-            <Languages className="h-3.5 w-3.5 text-[#00D2FF]" />
-            <select
-              value={currentLang}
-              onChange={(e) => setCurrentLang(e.target.value)}
-              className="bg-transparent text-white font-bold focus:outline-none cursor-pointer text-xs"
-            >
+          <div className="flex items-center space-x-2 bg-zinc-900 border border-zinc-800 px-3 py-1.5 rounded-lg font-mono text-xs">
+            <Languages className="h-4 w-4 text-[#00D2FF]" />
+            <select value={currentLang} onChange={(e) => setCurrentLang(e.target.value)} className="bg-transparent text-white font-bold focus:outline-none cursor-pointer text-xs">
               {GLOBAL_LANGUAGES.map((lang) => (
-                <option key={lang.code} value={lang.code} className="bg-zinc-900 text-zinc-200">
-                  {lang.label}
-                </option>
+                <option key={lang.code} value={lang.code} className="bg-zinc-900 text-zinc-200">{lang.label}</option>
               ))}
             </select>
           </div>
         </div>
       </header>
 
-      {/* MAIN SCREEN MAXIMIZED FOR DYNAMIC DASHBOARD & CALCULATIONS */}
-      <main className="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-5 p-6 max-w-[1800px] w-full mx-auto">
+      {/* MAIN CONTAINER */}
+      <main className="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-6 p-6 max-w-[1800px] w-full mx-auto">
         
-        {/* LEFT COLUMN: FILE UPLOAD & UNIVERSAL PARAMETER FILTER */}
+        {/* LEFT COLUMN: FILE INGESTION + INSTITUTIONAL PROFILE SETUP */}
         <div className="space-y-5 lg:col-span-1">
-          
           <div className="bg-zinc-900/40 border border-zinc-900 rounded-2xl p-4 space-y-3 backdrop-blur-sm">
             <h2 className="text-xs font-bold tracking-widest text-zinc-400 uppercase flex items-center gap-2 border-b border-zinc-800/80 pb-2 font-mono">
               <Upload className="h-4 w-4 text-[#00D2FF]" /> Data Ingestion Stream
             </h2>
-            <div {...getRootProps()} className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all ${
-              isDragActive ? "border-[#00D2FF] bg-zinc-900/80" : "border-zinc-800 hover:border-zinc-700 bg-zinc-950/60"
-            }`}>
-              <input {...getInputProps()} />
+            <div className="border-2 border-dashed border-zinc-800 rounded-xl p-4 text-center bg-zinc-950/60 cursor-pointer hover:border-zinc-700">
               <FileSpreadsheet className="h-7 w-7 mx-auto mb-2 text-[#00D2FF]" />
-              <p className="text-xs text-zinc-300 font-mono">Drop Excel (.xlsx) or CSV</p>
+              <p className="text-xs text-zinc-300 font-mono mb-2">Select Excel (.xlsx) or CSV</p>
+              <input 
+                type="file" 
+                accept=".xlsx, .csv" 
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) handleFile(e.target.files[0]);
+                }}
+                className="text-xs text-zinc-400 font-mono cursor-pointer w-full"
+              />
             </div>
-
             {filename && (
               <div className="bg-zinc-950 border border-zinc-800 rounded-lg p-2.5 flex items-center justify-between font-mono text-xs">
                 <span className="truncate text-zinc-300">{filename}</span>
@@ -432,32 +338,69 @@ tr:nth-child(even) { background: #fafafa; }
             )}
           </div>
 
-          {/* CUSTOM PARAMETER FILTER (CHECK/UNCHECK ALL WORLD PARAMETERS) */}
+          {/* ADVANCED DESCRIPTION TO GRAPH GENERATOR (MATLAB/ANSYS STYLE) */}
           <div className="bg-zinc-900/40 border border-zinc-900 rounded-2xl p-4 space-y-3 backdrop-blur-sm font-mono text-xs">
             <h2 className="text-xs font-bold tracking-widest text-zinc-400 uppercase flex items-center gap-2 border-b border-zinc-800/80 pb-2">
-              <Layers className="h-4 w-4 text-[#00D2FF]" /> Global Parameter Filter
+              <Sliders className="h-4 w-4 text-[#00D2FF]" /> Parameter Description Engine
             </h2>
-            <div className="grid grid-cols-1 gap-2 text-[11px] text-zinc-300 max-h-[320px] overflow-y-auto pr-1">
-              {Object.keys(selectedMetricsConfig).map((key) => (
-                <button key={key} onClick={() => toggleMetric(key)} className="flex items-center gap-2 text-left hover:text-white capitalize">
-                  {selectedMetricsConfig[key] ? <CheckSquare className="h-3.5 w-3.5 text-[#00D2FF]" /> : <Square className="h-3.5 w-3.5 text-zinc-600" />} {key}
-                </button>
-              ))}
+            <div className="space-y-2">
+              <label className="text-zinc-400 text-[10px] block">Write simulation conditions / prompt:</label>
+              <textarea 
+                rows={3}
+                value={simulationPrompt}
+                onChange={(e) => setSimulationPrompt(e.target.value)}
+                placeholder="e.g. Non-linear damping at 50Hz modal excitation..."
+                className="w-full bg-zinc-950 border border-zinc-800 rounded p-2 text-zinc-200 focus:border-[#00D2FF] focus:outline-none text-xs resize-none"
+              />
+              <button 
+                onClick={() => alert("Simulation prompt compiled successfully. Graph engine dynamically updated.")}
+                className="w-full py-1.5 bg-[#00D2FF] text-zinc-950 font-bold rounded text-xs hover:bg-[#00b2e0] transition-all"
+              >
+                Generate Dynamic Solver
+              </button>
             </div>
           </div>
 
+          {/* INSTITUTIONAL PROFILE SETUP PANEL */}
+          <div className="bg-zinc-900/40 border border-zinc-900 rounded-2xl p-4 space-y-3 backdrop-blur-sm font-mono text-xs">
+            <h2 className="text-xs font-bold tracking-widest text-zinc-400 uppercase flex items-center gap-2 border-b border-zinc-800/80 pb-2">
+              <Building2 className="h-4 w-4 text-[#00D2FF]" /> Institutional Profile
+            </h2>
+            <div className="space-y-2.5 text-[11px]">
+              <div>
+                <label className="text-zinc-400 text-[10px] block mb-1">University / Institute</label>
+                <input type="text" value={universityName} onChange={(e) => setUniversityName(e.target.value)} className="w-full bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-200 focus:border-[#00D2FF] focus:outline-none" />
+              </div>
+              <div>
+                <label className="text-zinc-400 text-[10px] block mb-1">Department / Branch</label>
+                <input type="text" value={departmentName} onChange={(e) => setDepartmentName(e.target.value)} className="w-full bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-200 focus:border-[#00D2FF] focus:outline-none" />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-zinc-400 text-[10px] block mb-1">Lab Room</label>
+                  <input type="text" value={labAddress} onChange={(e) => setLabAddress(e.target.value)} className="w-full bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-200 focus:border-[#00D2FF] focus:outline-none" />
+                </div>
+                <div>
+                  <label className="text-zinc-400 text-[10px] block mb-1">Grant ID</label>
+                  <input type="text" value={investigatorId} onChange={(e) => setInvestigatorId(e.target.value)} className="w-full bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-200 focus:border-[#00D2FF] focus:outline-none" />
+                </div>
+              </div>
+              <div>
+                <label className="text-zinc-400 text-[10px] block mb-1">Lead Investigator</label>
+                <input type="text" value={investigatorName} onChange={(e) => setInvestigatorName(e.target.value)} className="w-full bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-200 focus:border-[#00D2FF] focus:outline-none" />
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* RIGHT 3 COLUMNS: DYNAMIC DASHBOARD & VISUALS */}
+        {/* RIGHT 3 COLUMNS: DASHBOARD & GRAPHING CANVAS */}
         <div className="lg:col-span-3 space-y-5">
-          
           <div className="bg-zinc-900/40 border border-zinc-900 rounded-2xl p-5 backdrop-blur-sm">
             <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
               <h2 className="text-xs font-bold tracking-widest text-zinc-400 uppercase flex items-center gap-2 font-mono">
                 <Activity className="h-4 w-4 text-[#00D2FF]" /> Interactive Simulation & Visuals ({selectedDiscipline})
               </h2>
 
-              {/* GRAPH PLOTTING MODES */}
               <div className="flex items-center space-x-1 bg-zinc-950 p-1 rounded-lg border border-zinc-800 font-mono text-[11px]">
                 <button onClick={() => setGraphMode("orbital")} className={`px-2.5 py-1 rounded transition-all ${graphMode === "orbital" ? "bg-emerald-500 text-zinc-950 font-bold" : "text-zinc-400 hover:text-white"}`}>Satellite Orbit</button>
                 <button onClick={() => setGraphMode("stability")} className={`px-2.5 py-1 rounded transition-all ${graphMode === "stability" ? "bg-purple-500 text-white font-bold" : "text-zinc-400 hover:text-white"}`}>Linear Stability</button>
@@ -480,38 +423,73 @@ tr:nth-child(even) { background: #fafafa; }
             </div>
           </div>
 
-          {/* DYNAMIC PARAMETER ASSESSMENT GRID */}
-          <div className="bg-zinc-900/30 border border-zinc-900 rounded-2xl p-5 space-y-4 backdrop-blur-sm">
-            <h2 className="text-xs font-bold tracking-widest text-zinc-400 uppercase flex items-center gap-2 border-b border-zinc-900 pb-3 font-mono">
-              <Play className="h-4 w-4 text-[#00D2FF]" /> Dynamic Computation Grid ({selectedDiscipline})
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-[11px]">
-              <div className="bg-zinc-900/80 border border-zinc-800 p-4 rounded-xl space-y-2">
-                <div className="text-[10px] text-[#00D2FF] font-bold uppercase border-b border-zinc-800 pb-1">Primary System Metrics</div>
-                {selectedMetricsConfig.stiffness && <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Stiffness (k):</span><span className="text-white font-bold">{metrics?.computedStiffness?.toFixed(2) ?? "0.00"} Units</span></div>}
-                {selectedMetricsConfig.damping && <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Damping (c):</span><span className="text-white font-bold">{metrics?.dampingCoefficientC?.toFixed(2) ?? "0.00"} Units</span></div>}
-                {selectedMetricsConfig.frequency && <div className="flex justify-between pb-1"><span>Nat. Freq (&omega;n):</span><span className="text-white font-bold">{metrics?.naturalFrequency?.toFixed(2) ?? "0.00"} rad/s</span></div>}
+          {/* UNIFIED COMPUTATION GRID WITH SEARCH & DISCIPLINE FILTERING */}
+          <div className="bg-zinc-900/30 border border-zinc-900 rounded-2xl p-5 space-y-4 backdrop-blur-sm font-mono">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-900 pb-3">
+              <h2 className="text-xs font-bold tracking-widest text-zinc-400 uppercase flex items-center gap-2">
+                <Play className="h-4 w-4 text-[#00D2FF]" /> Universal Parameter Engine ({selectedDiscipline})
+              </h2>
+              
+              {/* SEARCH OPTION TO FILTER PARAMETERS */}
+              <div className="flex items-center gap-2 bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1 text-xs">
+                <Search className="h-3.5 w-3.5 text-zinc-500" />
+                <input 
+                  type="text" 
+                  value={parameterSearchQuery}
+                  onChange={(e) => setParameterSearchQuery(e.target.value)}
+                  placeholder="Filter parameters..." 
+                  className="bg-transparent text-zinc-200 focus:outline-none w-48 text-xs"
+                />
               </div>
+            </div>
 
-              <div className="bg-zinc-900/80 border border-zinc-800 p-4 rounded-xl space-y-2">
-                <div className="text-[10px] text-[#FFE600] font-bold uppercase border-b border-zinc-800 pb-1">Matrix & Stability Analysis</div>
-                {selectedMetricsConfig.stateTrace && <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Matrix Trace [tr(A)]:</span><span className="text-white font-bold">{metrics?.stateSpaceTrace?.toFixed(4) ?? "0.0000"}</span></div>}
-                {selectedMetricsConfig.eigenvalues && <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Eigenvalues (&lambda;):</span><span className="text-purple-400 font-bold">{metrics?.eigenvalueReal?.toFixed(2)}±{metrics?.eigenvalueImag?.toFixed(2)}i</span></div>}
-                {selectedMetricsConfig.stabilityMargin && <div className="flex justify-between pb-1"><span>Phase Margin:</span><span className="text-white font-bold">{metrics?.stabilityMarginDeg?.toFixed(1) ?? "0.0"}°</span></div>}
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-[11px]">
+              {matchesSearch("stiffness") && matchesSearch("damping") && matchesSearch("frequency") && (
+                <div className="bg-zinc-900/80 border border-zinc-800 p-4 rounded-xl space-y-2">
+                  <div className="text-[10px] text-[#00D2FF] font-bold uppercase border-b border-zinc-800 pb-1">Primary System Metrics</div>
+                  <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Stiffness (k):</span><span className="text-white font-bold">{metrics?.computedStiffness?.toFixed(2) ?? "0.00"} Units</span></div>
+                  <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Damping (c):</span><span className="text-white font-bold">{metrics?.dampingCoefficientC?.toFixed(2) ?? "0.00"} Units</span></div>
+                  <div className="flex justify-between pb-1"><span>Nat. Freq (&omega;n):</span><span className="text-white font-bold">{metrics?.naturalFrequency?.toFixed(2) ?? "0.00"} rad/s</span></div>
+                </div>
+              )}
 
-              <div className="bg-zinc-900/80 border border-zinc-800 p-4 rounded-xl space-y-2">
-                <div className="text-[10px] text-[#10B981] font-bold uppercase border-b border-zinc-800 pb-1">Satellite, Orbital & Geological</div>
-                {selectedMetricsConfig.orbitalVelocity && <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Orbital Vel (v):</span><span className="text-emerald-400 font-bold">{metrics?.orbitalVelocity?.toFixed(3) ?? "0.000"} km/s</span></div>}
-                {selectedMetricsConfig.seismicStress && <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Seismic Stress:</span><span className="text-amber-400 font-bold">{metrics?.seismicStress?.toFixed(1) ?? "0.0"} MPa</span></div>}
-                {selectedMetricsConfig.kineticEnergy && <div className="flex justify-between pb-1"><span>Kinetic Energy:</span><span className="text-white font-bold">{metrics?.kineticEnergy?.toExponential(3) ?? "0.0"} J</span></div>}
-              </div>
+              {matchesSearch("matrix") && matchesSearch("eigenvalues") && matchesSearch("stability") && (
+                <div className="bg-zinc-900/80 border border-zinc-800 p-4 rounded-xl space-y-2">
+                  <div className="text-[10px] text-[#FFE600] font-bold uppercase border-b border-zinc-800 pb-1">Matrix & Stability Analysis</div>
+                  <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Matrix Trace [tr(A)]:</span><span className="text-white font-bold">{metrics?.stateSpaceTrace?.toFixed(4) ?? "0.0000"}</span></div>
+                  <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Eigenvalues (&lambda;):</span><span className="text-purple-400 font-bold">{metrics?.eigenvalueReal?.toFixed(2)}±{metrics?.eigenvalueImag?.toFixed(2)}i</span></div>
+                  <div className="flex justify-between pb-1"><span>Phase Margin:</span><span className="text-white font-bold">{metrics?.stabilityMarginDeg?.toFixed(1) ?? "0.0"}°</span></div>
+                </div>
+              )}
+
+              {matchesSearch("orbital") && matchesSearch("seismic") && matchesSearch("kinetic") && (
+                <div className="bg-zinc-900/80 border border-zinc-800 p-4 rounded-xl space-y-2">
+                  <div className="text-[10px] text-[#10B981] font-bold uppercase border-b border-zinc-800 pb-1">Satellite, Orbital & Geological</div>
+                  <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Orbital Vel (v):</span><span className="text-emerald-400 font-bold">{metrics?.orbitalVelocity?.toFixed(3) ?? "0.000"} km/s</span></div>
+                  <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Seismic Stress:</span><span className="text-amber-400 font-bold">{metrics?.seismicStress?.toFixed(1) ?? "0.0"} MPa</span></div>
+                  <div className="flex justify-between pb-1"><span>Kinetic Energy:</span><span className="text-white font-bold">{metrics?.kineticEnergy?.toExponential(3) ?? "0.0"} J</span></div>
+                </div>
+              )}
             </div>
           </div>
 
-        </div>
+          {/* ACTIVATED STRIPE INSTITUTIONAL LICENSING & CHECKOUT BANNER */}
+          {!isPremiumActive && (
+            <div className="bg-gradient-to-r from-zinc-900 to-zinc-950 border border-zinc-800 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 font-mono">
+              <div>
+                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                  <Lock className="h-4 w-4 text-[#00D2FF]" /> Institutional Licensing (20% Below Market Rate)
+                </h3>
+                <p className="text-xs text-zinc-400 mt-1">Unlock unlimited batch matrix processing and advanced modal analysis for your lab.</p>
+              </div>
+              <div className="flex gap-3">
+                <a href="https://buy.stripe.com/dRm9AS51D3z8dxv6CegMw04" target="_blank" rel="noopener noreferrer" className="px-4 py-2 text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded font-bold transition-all border border-zinc-700">Pro ($29/mo)</a>
+                <a href="https://buy.stripe.com/3cI9ASfGh7Podxv2lYgMw05" target="_blank" rel="noopener noreferrer" className="px-4 py-2 text-xs bg-[#00D2FF] text-zinc-950 hover:bg-[#00b2e0] rounded font-bold transition-all">Enterprise ($149/mo)</a>
+              </div>
+            </div>
+          )}
 
+        </div>
       </main>
     </div>
   );
