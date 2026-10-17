@@ -131,7 +131,6 @@ function MainDashboard() {
       if (disps.length > 0) meanDisp = disps.reduce((a, b) => a + Math.abs(b), 0) / disps.length;
     }
 
-    // Dynamic Tensor & Inertia Matrix Evaluations (Based on Ring Damper Fluid Slug equations)
     const Ixx = m * r * r * (phi - Math.sin(phi)) / 2 + m * h * h;
     const Iyy = m * r * r * (1.5 * phi - 2 * Math.sin(phi) + 0.25 * Math.sin(2 * phi));
     const Izz = Ixx + Iyy;
@@ -161,7 +160,6 @@ function MainDashboard() {
     runDynamicSolverEngine(rows);
   }, [rows, runDynamicSolverEngine]);
 
-  // Advanced Canvas rendering engine simulating MATLAB / ANSYS phase portraits & trajectories
   const renderVisualTelemetryWave = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -171,7 +169,6 @@ function MainDashboard() {
     const H = canvas.height;
     ctx.clearRect(0, 0, W, H);
 
-    // Grid Lines
     ctx.strokeStyle = "#27272a";
     ctx.lineWidth = 1;
     for (let i = 0; i <= 10; i++) {
@@ -180,7 +177,6 @@ function MainDashboard() {
     }
 
     if (graphMode === "orbital" || graphMode === "tensor3d") {
-      // 3D Angular Momentum Sphere & Trajectory Spiral
       ctx.strokeStyle = "#10B981";
       ctx.lineWidth = 2.5;
       ctx.beginPath();
@@ -192,14 +188,12 @@ function MainDashboard() {
       }
       ctx.stroke();
 
-      // Sphere Outline
       ctx.strokeStyle = "#00D2FF";
       ctx.lineWidth = 1.5;
       ctx.beginPath();
       ctx.ellipse(W / 2, H / 2, 140, 70, 0, 0, Math.PI * 2);
       ctx.stroke();
     } else if (graphMode === "stability") {
-      // Phase Space Trajectory Spiral towards Equilibrium
       ctx.strokeStyle = "#A855F7";
       ctx.lineWidth = 2.5;
       ctx.beginPath();
@@ -212,7 +206,6 @@ function MainDashboard() {
       }
       ctx.stroke();
     } else if (graphMode === "damper") {
-      // Fluid Slug Decay Curve
       ctx.strokeStyle = "#FFE600";
       ctx.lineWidth = 2.5;
       ctx.beginPath();
@@ -222,7 +215,6 @@ function MainDashboard() {
       }
       ctx.stroke();
     } else {
-      // Standard High-Frequency Waveform
       ctx.strokeStyle = "#00D2FF";
       ctx.lineWidth = 2.5;
       ctx.beginPath();
@@ -297,13 +289,13 @@ function MainDashboard() {
       <tr><th>Computational Parameter</th><th>Mathematical Notation</th><th>Computed Quantified Value</th></tr>
       </thead>
       <tbody>
-      <tr><td>Inertia Tensor XX</td><td>$I_{xx}$</td><td><strong>${computedMetrics.inertiaTensorXX.toExponential(4)}</strong> kg·m²</td></tr>
-      <tr><td>Inertia Tensor YY</td><td>$I_{yy}$</td><td><strong>${computedMetrics.inertiaTensorYY.toExponential(4)}</strong> kg·m²</td></tr>
-      <tr><td>Inertia Tensor ZZ</td><td>$I_{zz}$</td><td><strong>${computedMetrics.inertiaTensorZZ.toExponential(4)}</strong> kg·m²</td></tr>
-      <tr><td>State-Space Matrix Trace</td><td>$\text{tr}(A)$</td><td><strong>${computedMetrics.matrixTrace.toFixed(4)}</strong> s⁻¹</td></tr>
-      <tr><td>System Eigenvalues</td><td>$\lambda_{1,2}$</td><td><strong>${computedMetrics.eigenvalueReal.toFixed(3)} ± ${computedMetrics.eigenvalueImag.toFixed(3)}i</strong></td></tr>
-      <tr><td>Total Kinetic Energy</td><td>$K.E.$</td><td><strong>${computedMetrics.kineticEnergy.toFixed(2)}</strong> J</td></tr>
-      <tr><td>Nutation Angle Decay</td><td>$\theta_{nut}$</td><td><strong>${computedMetrics.nutationAngleDeg.toFixed(3)}</strong> deg</td></tr>
+      <tr><td>Inertia Tensor XX</td><td>I_xx</td><td><strong>${computedMetrics.inertiaTensorXX.toExponential(4)}</strong> kg·m²</td></tr>
+      <tr><td>Inertia Tensor YY</td><td>I_yy</td><td><strong>${computedMetrics.inertiaTensorYY.toExponential(4)}</strong> kg·m²</td></tr>
+      <tr><td>Inertia Tensor ZZ</td><td>I_zz</td><td><strong>${computedMetrics.inertiaTensorZZ.toExponential(4)}</strong> kg·m²</td></tr>
+      <tr><td>State-Space Matrix Trace</td><td>tr(A)</td><td><strong>${computedMetrics.matrixTrace.toFixed(4)}</strong> s⁻¹</td></tr>
+      <tr><td>System Eigenvalues</td><td>Lambda</td><td><strong>${computedMetrics.eigenvalueReal.toFixed(3)} ± ${computedMetrics.eigenvalueImag.toFixed(3)}i</strong></td></tr>
+      <tr><td>Total Kinetic Energy</td><td>K.E.</td><td><strong>${computedMetrics.kineticEnergy.toFixed(2)}</strong> J</td></tr>
+      <tr><td>Nutation Angle Decay</td><td>Theta_nut</td><td><strong>${computedMetrics.nutationAngleDeg.toFixed(3)}</strong> deg</td></tr>
       </tbody>
       </table>
       <div class="footer">AeroMatrix AI Studio &bull; Master's & PhD Computational Research Suite</div>
@@ -395,21 +387,21 @@ function MainDashboard() {
             <div className="space-y-2.5 text-[11px]">
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="text-zinc-400 text-[10px] block mb-1">Mass ($m_s$ kg)</label>
+                  <label className="text-zinc-400 text-[10px] block mb-1">Mass (m_s kg)</label>
                   <input type="number" step="0.01" value={customMass} onChange={(e) => { setCustomMass(e.target.value); runDynamicSolverEngine(rows); }} className="w-full bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-zinc-200 focus:border-[#00D2FF] focus:outline-none" />
                 </div>
                 <div>
-                  <label className="text-zinc-400 text-[10px] block mb-1">Radius ($R_c$ m)</label>
+                  <label className="text-zinc-400 text-[10px] block mb-1">Radius (R_c m)</label>
                   <input type="number" step="0.001" value={customRadius} onChange={(e) => { setCustomRadius(e.target.value); runDynamicSolverEngine(rows); }} className="w-full bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-zinc-200 focus:border-[#00D2FF] focus:outline-none" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="text-zinc-400 text-[10px] block mb-1">Fill Angle ($\phi$ °)</label>
+                  <label className="text-zinc-400 text-[10px] block mb-1">Fill Angle (phi °)</label>
                   <input type="number" value={fillAnglePhi} onChange={(e) => { setFillAnglePhi(e.target.value); runDynamicSolverEngine(rows); }} className="w-full bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-zinc-200 focus:border-[#00D2FF] focus:outline-none" />
                 </div>
                 <div>
-                  <label className="text-zinc-400 text-[10px] block mb-1">Offset ($h_i$ m)</label>
+                  <label className="text-zinc-400 text-[10px] block mb-1">Offset (h_i m)</label>
                   <input type="number" step="0.001" value={verticalOffsetH} onChange={(e) => { setVerticalOffsetH(e.target.value); runDynamicSolverEngine(rows); }} className="w-full bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-zinc-200 focus:border-[#00D2FF] focus:outline-none" />
                 </div>
               </div>
@@ -510,28 +502,28 @@ function MainDashboard() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-[11px]">
               {matchesSearch("inertia") && matchesSearch("tensor") && (
                 <div className="bg-zinc-900/80 border border-zinc-800 p-4 rounded-xl space-y-2">
-                  <div className="text-[10px] text-[#00D2FF] font-bold uppercase border-b border-zinc-800 pb-1">Slug Inertia Tensors ($I_{ds}$)</div>
-                  <div className="flex justify-between border-b border-zinc-900 pb-1"><span>$I_{xx}$ (Transverse):</span><span className="text-white font-bold">{computedMetrics.inertiaTensorXX.toExponential(4)} kg·m²</span></div>
-                  <div className="flex justify-between border-b border-zinc-900 pb-1"><span>$I_{yy}$ (Rotational):</span><span className="text-white font-bold">{computedMetrics.inertiaTensorYY.toExponential(4)} kg·m²</span></div>
-                  <div className="flex justify-between pb-1"><span>$I_{zz}$ (Axial):</span><span className="text-white font-bold">{computedMetrics.inertiaTensorZZ.toExponential(4)} kg·m²</span></div>
+                  <div className="text-[10px] text-[#00D2FF] font-bold uppercase border-b border-zinc-800 pb-1">Slug Inertia Tensors (Ids)</div>
+                  <div className="flex justify-between border-b border-zinc-900 pb-1"><span>I_xx (Transverse):</span><span className="text-white font-bold">{computedMetrics.inertiaTensorXX.toExponential(4)} kg·m²</span></div>
+                  <div className="flex justify-between border-b border-zinc-900 pb-1"><span>I_yy (Rotational):</span><span className="text-white font-bold">{computedMetrics.inertiaTensorYY.toExponential(4)} kg·m²</span></div>
+                  <div className="flex justify-between pb-1"><span>I_zz (Axial):</span><span className="text-white font-bold">{computedMetrics.inertiaTensorZZ.toExponential(4)} kg·m²</span></div>
                 </div>
               )}
 
               {matchesSearch("matrix") && matchesSearch("eigenvalues") && matchesSearch("trace") && (
                 <div className="bg-zinc-900/80 border border-zinc-800 p-4 rounded-xl space-y-2">
                   <div className="text-[10px] text-[#FFE600] font-bold uppercase border-b border-zinc-800 pb-1">State-Space & Eigenvalue Solvers</div>
-                  <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Matrix Trace [$\text{tr}(A)$]:</span><span className="text-white font-bold">{computedMetrics.matrixTrace.toFixed(4)} s⁻¹</span></div>
-                  <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Eigenvalues ($\lambda$):</span><span className="text-purple-400 font-bold">{computedMetrics.eigenvalueReal.toFixed(2)}±{computedMetrics.eigenvalueImag.toFixed(2)}i</span></div>
-                  <div className="flex justify-between pb-1"><span>Casimir Invariant ($\vert{}h\vert{}^2$):</span><span className="text-white font-bold">{computedMetrics.casimirInvariant.toFixed(4)}</span></div>
+                  <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Matrix Trace [tr(A)]:</span><span className="text-white font-bold">{computedMetrics.matrixTrace.toFixed(4)} s⁻¹</span></div>
+                  <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Eigenvalues (Lambda):</span><span className="text-purple-400 font-bold">{computedMetrics.eigenvalueReal.toFixed(2)}±{computedMetrics.eigenvalueImag.toFixed(2)}i</span></div>
+                  <div className="flex justify-between pb-1"><span>Casimir Invariant (|h|²):</span><span className="text-white font-bold">{computedMetrics.casimirInvariant.toFixed(4)}</span></div>
                 </div>
               )}
 
               {matchesSearch("energy") && matchesSearch("nutation") && matchesSearch("momentum") && (
                 <div className="bg-zinc-900/80 border border-zinc-800 p-4 rounded-xl space-y-2">
                   <div className="text-[10px] text-[#10B981] font-bold uppercase border-b border-zinc-800 pb-1">Dissipative Dynamics & Energy</div>
-                  <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Total Kinetic Energy ($K.E.$):</span><span className="text-emerald-400 font-bold">{computedMetrics.kineticEnergy.toFixed(2)} J</span></div>
-                  <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Nutation Angle ($\theta$):</span><span className="text-amber-400 font-bold">{computedMetrics.nutationAngleDeg.toFixed(3)}°</span></div>
-                  <div className="flex justify-between pb-1"><span>Angular Momentum ($h$):</span><span className="text-white font-bold">{computedMetrics.angularMomentumH.toFixed(3)} kg·m²/s</span></div>
+                  <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Total Kinetic Energy (K.E.):</span><span className="text-emerald-400 font-bold">{computedMetrics.kineticEnergy.toFixed(2)} J</span></div>
+                  <div className="flex justify-between border-b border-zinc-900 pb-1"><span>Nutation Angle (Theta):</span><span className="text-amber-400 font-bold">{computedMetrics.nutationAngleDeg.toFixed(3)}°</span></div>
+                  <div className="flex justify-between pb-1"><span>Angular Momentum (h):</span><span className="text-white font-bold">{computedMetrics.angularMomentumH.toFixed(3)} kg·m²/s</span></div>
                 </div>
               )}
             </div>
